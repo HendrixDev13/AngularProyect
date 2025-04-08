@@ -1,0 +1,20 @@
+/* You can add global styles to this file, and also import other style files */
+.wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.logo{
+height: 130px;
+margin-bottom: 10px;
+}
+
+
+.body{
+max-width: 300px;
+width: 100%;
+text-align: center;
+}
