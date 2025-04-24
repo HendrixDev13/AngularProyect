@@ -1,9 +1,11 @@
 import dotenv from 'dotenv';
 import Server from './models/server';
-import db from './database/config'; // 👈 importamos la conexión Sequelize
+import db from './database/config';
 
-// Cargar variables de entorno
 dotenv.config();
+
+// 👇 IMPORTAR RELACIONES ENTRE MODELOS
+import './models/associations';
 
 // Probar la conexión a la base de datos
 (async () => {

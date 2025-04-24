@@ -20,6 +20,8 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { NavbarComponent } from './components/navbar/navbar.component'; // Asegurate de que existe
 import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { AddTokenInterceptor } from './utils/add-token.interceptor';
+import { ListProductsComponent } from './components/list-products/list-products.component';
+import { AddEditProductComponent } from './components/add-edit-product/add-edit-product.component';
 
 
 
@@ -30,14 +32,15 @@ import { AddTokenInterceptor } from './utils/add-token.interceptor';
     LoginComponent,
     DashboardComponent,
     NavbarComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    AddEditProductComponent
 
   ],
   imports: [
     BrowserModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
-      timeOut: 40000,
+      timeOut: 4000,
       positionClass: 'toast-bottom-right',
       preventDuplicates: true,
     }), // Por ahora rutas vacías, podemos agregarlas luego

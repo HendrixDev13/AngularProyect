@@ -53,7 +53,8 @@ togglePassword() {
         localStorage.setItem('token', token);
         // Esperamos 1.5 segundos para que el spinner se note antes de navegar
         setTimeout(() => {
-          this.router.navigate(['/dashboard']);
+          /*this.router.navigate(['/dashboard']);*/
+          this.router.navigate(['/inventario']);
           this.loading = false;
         }, 2000); // Puedes cambiar a 2000 (2 segundos) si quieres más tiempo
       },
