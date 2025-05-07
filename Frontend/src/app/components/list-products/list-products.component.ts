@@ -213,7 +213,7 @@ export class ListProductsComponent implements OnInit {
         modal.hide();
       },
       error: (err) => {
-        this.toastr.error(err.error?.msg || 'Error al eliminar el producto');
+        this.toastr.error(err.error?.error || err.error?.msg || 'Error al eliminar el producto');
       }
     });
   }

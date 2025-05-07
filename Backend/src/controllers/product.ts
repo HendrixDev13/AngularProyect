@@ -81,33 +81,27 @@ export const deleteProductWithPin = async (req: Request, res: Response) => {
   const { id } = req.params;
   const { pin } = req.body;
 
-  if (!id || !pin) {
-    return res.status(400).json({ msg: 'ID y PIN son requeridos' });
-  }
-
   if (pin !== '1234') {
-    return res.status(401).json({ msg: 'PIN incorrecto' });
+    return res.status(401).json({ message: 'PIN incorrecto' });
   }
 
   try {
-    // Paso 1: Buscar el producto
-    const producto = await Product.findByPk(id);
-    if (!producto) {
-      return res.status(404).json({ msg: 'Producto no encontrado' });
-    }
+    // 1. Borrar movimientos relacionados
+    await MovimientoInventario.destroy({ where: { id_producto: id } });
 
-    // Paso 2: Eliminar primero el inventario relacionado
+    // 2. Borrar inventario
     await Inventario.destroy({ where: { id_producto: id } });
 
-    // Paso 3: Luego eliminar el producto
-    await producto.destroy();
+    // 3. Borrar producto
+    await Product.destroy({ where: { id_producto: id } });
 
-    return res.json({ msg: 'Producto eliminado exitosamente' });
+    res.json({ message: 'Producto eliminado con éxito' });
   } catch (error) {
-    console.error('❌ Error interno al eliminar producto:', error);
-    return res.status(500).json({ msg: 'Error interno al eliminar producto' });
+    console.error('Error interno al eliminar producto:', error);
+    res.status(500).json({ error: 'Error interno al eliminar producto' });
   }
 };
+
 
 export const actualizarProductoConMovimiento = async (req: Request, res: Response) => {
   const { id } = req.params;
