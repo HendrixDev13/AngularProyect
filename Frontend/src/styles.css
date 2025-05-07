@@ -18,3 +18,31 @@ max-width: 300px;
 width: 100%;
 text-align: center;
 }
+
+::ng-deep .toast-success {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+::ng-deep .toast-error {
+  background-color: #000 !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+::ng-deep .toast-warning {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+::ng-deep .toast-title {
+  font-size: 14px;
+}
+
+::ng-deep .toast-message i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+

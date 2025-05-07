@@ -6,15 +6,18 @@ import { LoginComponent } from './components/login/login.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 
 // Guards
-import { AuthGuard} from './utils/auth.guard';
-
-
+import { AuthGuard } from './utils/auth.guard';
 
 const routes: Routes = [
-  {path: '', redirectTo: '/login', pathMatch: 'full'},
-  {path: 'login', component: LoginComponent},
-  {path: 'dashboard', component: DashboardComponent, canActivate: [ AuthGuard ]},
-  {path: '**', redirectTo: '/login', pathMatch: 'full'}
+  { path: '', redirectTo: '/login', pathMatch: 'full' },
+  { path: 'login', component: LoginComponent },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
+  {
+    path: 'inventario',
+    loadComponent: () => import('./components/list-products/list-products.component').then(m => m.ListProductsComponent),
+    canActivate: [AuthGuard]
+  },
+  { path: '**', redirectTo: '/login', pathMatch: 'full' }
 ];
 
 @NgModule({

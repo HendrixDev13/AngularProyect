@@ -7,30 +7,16 @@ const Product = db.define('Product', {
     primaryKey: true,
     autoIncrement: true
   },
-  CodigoBarras: {
-    type: DataTypes.STRING(50)
-  },
-  ProductoNombre: {
-    type: DataTypes.STRING(100)
-  },
-  Modelo: {
-    type: DataTypes.STRING(50)
-  },
-  Marca: {
-    type: DataTypes.STRING(50)
-  },
-  Descripcion: {
-    type: DataTypes.TEXT
-  },
-  Color: {
-    type: DataTypes.STRING(30)
-  },
-  PrecioVenta: {
-    type: DataTypes.DECIMAL(10, 2)
-  }
+  CodigoBarras: DataTypes.STRING(50),
+  ProductoNombre: DataTypes.STRING(100),
+  Modelo: DataTypes.STRING(50),
+  Marca: DataTypes.STRING(50),
+  Descripcion: DataTypes.TEXT,
+  Color: DataTypes.STRING(30),
+  PrecioVenta: DataTypes.DECIMAL(10, 2)
 }, {
   tableName: 'tbl_Producto',
   timestamps: false
 });
 
-export default Product;
+export default Product; // 👈 ESTA LÍNEA es esencial

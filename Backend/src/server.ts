@@ -1,29 +1,32 @@
+import express from 'express';
+import cors from 'cors';
+import path from 'path';
+import productRoutes from './routes/product'; // ✅ tus rutas
+import movimientosRoutes from './routes/movimientos';
 import {
   AngularNodeAppEngine,
   createNodeRequestHandler,
   writeResponseToNodeResponse,
 } from '@angular/ssr/node';
-import express from 'express';
-import path from 'path';
-import cors from 'cors';
 
-
-
-const serverDistFolder = path.resolve(); // ✅ Compatible con CommonJS
+const serverDistFolder = path.resolve();
 const browserDistFolder = path.resolve(serverDistFolder, '../browser');
 
 const app = express();
 const angularApp = new AngularNodeAppEngine();
 
+// ✅ MIDDLEWARES GLOBALES
 app.use(cors({
-  origin: 'http://localhost:4200', // Solo permite Angular en dev
+  origin: 'http://localhost:4200',
   credentials: true
 }));
+app.use(express.json()); // MUY importante para POST/PUT en futuro
 
+// ✅ TUS RUTAS API
+app.use('/api/products', productRoutes);
+app.use('/api/movimientos', movimientosRoutes);
 
-/**
- * Serve static files from /browserpero
- */
+// ✅ ARCHIVOS ESTÁTICOS (angular build)
 app.use(
   express.static(browserDistFolder, {
     maxAge: '1y',
@@ -32,9 +35,7 @@ app.use(
   }),
 );
 
-/**
- * Handle all other requests by rendering the Angular application.
- */
+// ✅ SSR DE ANGULAR (cualquier ruta que no sea /api)
 app.use('/**', (req, res, next) => {
   angularApp
     .handle(req)
@@ -44,17 +45,13 @@ app.use('/**', (req, res, next) => {
     .catch(next);
 });
 
-/**
- * Start the server if this module is the main entry point.
- */
+// ✅ INICIO DEL SERVIDOR
 if (require.main === module) {
-  const port = process.env['PORT'] || 4000;
+  const port = process.env.PORT || 3001;
   app.listen(port, () => {
     console.log(`Node Express server listening on http://localhost:${port}`);
   });
 }
 
-/**
- * The request handler used by the Angular CLI (dev-server and during build).
- */
+// ✅ EXPORTADOR PARA BUILD SSR
 export const reqHandler = createNodeRequestHandler(app);

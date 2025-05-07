@@ -1,11 +1,20 @@
-import { Router } from 'express';
-import { get } from 'http';
-import { getProducts } from '../controllers/product';
-import validateToken from './validate-token';
+import express from 'express';
+import {
+  getProducts,
+  getProductByCodigoBarras,
+  registrarProductoConInventario,
+  deleteProduct,
+  deleteProductWithPin,
+   // ✅ IMPORTA ESTA
+} from '../controllers/product';
+import { actualizarProductoConMovimiento } from '../controllers/product';
+const router = express.Router();
 
-const router = Router();
-
-
-router.get('/', validateToken ,getProducts);
+router.get('/', getProducts);
+router.get('/:codigo', getProductByCodigoBarras);
+router.post('/registrar', registrarProductoConInventario);
+router.delete('/:id', deleteProduct);
+router.put('/actualizar/:id', actualizarProductoConMovimiento);
+router.post('/eliminar-con-pin/:id', deleteProductWithPin); // 👈 esta línea debe estar // ✅ POST y con :id
 
 export default router;
