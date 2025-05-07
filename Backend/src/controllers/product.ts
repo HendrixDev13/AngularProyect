@@ -77,12 +77,13 @@ export const deleteProduct = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteProductWithPin = async (req: Request, res: Response) => {
+export const deleteProductWithPin = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   const { pin } = req.body;
 
   if (pin !== '1234') {
-    return res.status(401).json({ message: 'PIN incorrecto' });
+    res.status(401).json({ message: 'PIN incorrecto' });
+    return;    
   }
 
   try {
@@ -96,6 +97,7 @@ export const deleteProductWithPin = async (req: Request, res: Response) => {
     await Product.destroy({ where: { id_producto: id } });
 
     res.json({ message: 'Producto eliminado con éxito' });
+    return;
   } catch (error) {
     console.error('Error interno al eliminar producto:', error);
     res.status(500).json({ error: 'Error interno al eliminar producto' });
