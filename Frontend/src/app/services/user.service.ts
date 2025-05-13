@@ -21,7 +21,11 @@ export class UserService{
     this.myApiUrl = '/api/users';    // URL del API de usuarios
    }
 
-   login(user: LoginUser): Observable<string> {
-    return this.http.post<string>(`${this.myAppUrl}${this.myApiUrl}/login`, user);
+   login(user: LoginUser): Observable<{ token: string; rol: string; nombre: string }> {
+    return this.http.post<{ token: string; rol: string; nombre: string }>(
+      `${this.myAppUrl}${this.myApiUrl}/login`, user
+    );
   }
+
+
 }

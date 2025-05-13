@@ -1,6 +1,8 @@
 import dotenv from 'dotenv';
 import Server from './models/server';
 import db from './database/config';
+import './models/associations'; // 👈 esto es lo que registra las relaciones
+
 
 dotenv.config();
 
