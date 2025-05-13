@@ -52,7 +52,11 @@ export const loginUser = async (req: Request, res: Response) => {
   }
 
   try {
-    const user: any = await User.findOne({ where: { Nombre: nombre } });
+    const user: any = await User.findOne({
+      where: { Nombre: nombre },
+      include: [{ association: 'rol' }]
+    });
+    
 
     if (!user) {
       return res.status(404).json({
@@ -78,12 +82,20 @@ export const loginUser = async (req: Request, res: Response) => {
     );
 
     // ✅ Esto es lo único que necesitás para mostrar solo el token entre comillas
-    res.json(token);
-
-  } catch (error) {
+    res.json({
+      token,
+      rol: user.rol.NombreRol,
+      nombre: user.Nombre
+    });
+    
+    
+    
+  } catch (error: any) {
+    console.error('❌ Error en login:', error?.message || error);
     res.status(500).json({
       msg: 'Error interno al iniciar sesión',
-      error,
+      error: error?.message || 'Error desconocido'
     });
   }
+  
 };

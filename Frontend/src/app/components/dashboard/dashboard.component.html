@@ -1,31 +1,60 @@
-<app-navbar></app-navbar>
+<div class="dashboard-container">
+  <!-- Logo -->
+  <div class="logo-container">
+    <img src="assets/img/HONDAHORIZONTAL.png" alt="HONDA" class="logo" />
+    <div class="divider"></div>
+  </div>
 
-<div class="container mt-2 text-center">
-  <h2>Repuestos</h2>
-  <table class="table">
-    <thead>
-      <tr>
-        <th scope="col">Id</th>
-        <th scope="col">Codigo de Barras</th>
-        <th scope="col">Nombre</th>
-        <th scope="col">Modelo</th>
-        <th scope="col">Marca</th>
-        <th scope="col">Descripcion</th>
-        <th scope="col">Color</th>
-        <th scope="col">Precio</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr *ngFor="let item of listProduct">
-        <td>{{item.id_producto}}</td>
-        <td>{{item.CodigoBarras}}</td>
-        <td>{{item.ProductoNombre}}</td>
-        <td>{{item.Modelo}}</td>
-        <td>{{item.Marca}}</td>
-        <td>{{item.Descripcion}}</td>
-        <td>{{item.Color}}</td>
-        <td>{{item.PrecioVenta}}</td>
-      </tr>
-    </tbody>
-  </table>
+  <!-- Botones -->
+  <div [ngClass]="{
+    'grid-buttons-admin': rolUsuario === 'Administrador',
+    'grid-buttons-vendedor': rolUsuario === 'Vendedor'
+  }">
+    <!-- Botón VENTAS -->
+    <button
+      class="dashboard-btn ventas"
+      *ngIf="rolUsuario === 'Administrador' || rolUsuario === 'Vendedor'"
+      (click)="goTo('ventas')">
+      VENTAS
+    </button>
+
+    <!-- Botón REPORTES -->
+    <button
+      class="dashboard-btn reportes"
+      *ngIf="rolUsuario === 'Administrador'"
+      (click)="goTo('reportes')">
+      REPORTES
+    </button>
+
+    <!-- Botón INVENTARIO -->
+    <button
+      class="dashboard-btn inventario"
+      *ngIf="rolUsuario === 'Administrador' || rolUsuario === 'Vendedor'"
+      (click)="goTo('inventario')">
+      INVENTARIO
+    </button>
+
+    <!-- Botón USUARIOS -->
+    <button
+      class="dashboard-btn usuarios"
+      *ngIf="rolUsuario === 'Administrador'"
+      (click)="goTo('usuarios')">
+      USUARIOS
+    </button>
+  </div>
+
+  <!-- Línea divisoria inferior según el rol -->
+  <div
+    [ngClass]="{
+      'bottom-divider': rolUsuario === 'Vendedor',
+      'bottom-strong-divider': rolUsuario === 'Administrador'
+    }">
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <span>Bienvenido: {{ nombreUsuario }}</span>
+    <span>Rol: {{ rolUsuario }}</span>
+    <button class="logout-btn" (click)="logout()">Cerrar sesión</button>
+  </div>
 </div>

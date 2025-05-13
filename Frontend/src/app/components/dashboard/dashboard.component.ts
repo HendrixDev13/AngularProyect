@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { ProductService } from '../../services/product.service';
-import { Product } from '../../interfaces/product';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,33 +8,22 @@ import { Product } from '../../interfaces/product';
   styleUrls: ['./dashboard.component.css']
 })
 export class DashboardComponent implements OnInit {
-  listProduct: Product[] = [];
-  loading: boolean = false;
+  rolUsuario: string = '';
+  nombreUsuario: string = '';
 
-  constructor(
-    private _productService: ProductService,
-    private router: Router
-  ) {}
+  constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.getProducts();
+    this.rolUsuario = localStorage.getItem('rol') || '';
+    this.nombreUsuario = localStorage.getItem('nombre') || '';
   }
 
-  getProducts() {
-    this._productService.getProducts().subscribe((data: Product[]) => {
-      this.listProduct = data;
-      console.log('Productos cargados', this.listProduct);
-    });
+  goTo(ruta: string): void {
+    this.router.navigate([`/${ruta}`]);
   }
 
-
-  logout() {
-    this.loading = true;
-
-    setTimeout(() => {
-      localStorage.removeItem('token');
-      location.href = '/login'; // Redirige al login
-    }, 2000); // Simulamos "procesando" por 1.5s
+  logout(): void {
+    localStorage.clear();
+    location.href = '/login';
   }
-
 }

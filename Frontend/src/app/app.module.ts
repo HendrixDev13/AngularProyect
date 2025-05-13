@@ -22,6 +22,9 @@ import { SpinnerComponent } from './shared/spinner/spinner.component';
 import { AddTokenInterceptor } from './utils/add-token.interceptor';
 import { ListProductsComponent } from './components/list-products/list-products.component';
 import { AddEditProductComponent } from './components/add-edit-product/add-edit-product.component';
+import { VentasComponent } from './components/ventas/ventas.component';
+import { ReportesComponent } from './components/reportes/reportes.component';
+import { UsuariosComponent } from './components/usuarios/usuarios.component';
 
 
 
@@ -33,7 +36,10 @@ import { AddEditProductComponent } from './components/add-edit-product/add-edit-
     DashboardComponent,
     NavbarComponent,
     SpinnerComponent,
-    AddEditProductComponent
+    AddEditProductComponent,
+    VentasComponent,
+    ReportesComponent,
+    UsuariosComponent
 
   ],
   imports: [
