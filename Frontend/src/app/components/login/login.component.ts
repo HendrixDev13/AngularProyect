@@ -57,10 +57,18 @@ togglePassword() {
         this.router.navigate(['/dashboard']);
         this.loading = false;
       },
-      error: () => {
-        this.loading = false;
-        this.toastr.error('Credenciales inválidas', 'Error');
-      }
+     error: (err) => {
+  this.loading = false; // ✅ Detener spinner SIEMPRE
+
+  if (err.status === 403) {
+    this.toastr.error(err.error.msg); // Cuenta inactiva
+  } else {
+    this.toastr.error('Usuario o contraseña incorrectos');
+  }
+}
+
+
+
     });
   }
 

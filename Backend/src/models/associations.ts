@@ -7,31 +7,32 @@ import MovimientoInventario from './movimientoInventario';
 // Asociación Rol - User
 Rol.hasMany(User, {
   foreignKey: 'id_rol',
-  as: 'usuarios'
+  as: 'usuarios',
 });
 
 User.belongsTo(Rol, {
   foreignKey: 'id_rol',
-  as: 'rol'
+  as: 'rol',
 });
 
 // Asociación Product - Inventario
 Product.hasOne(Inventario, {
   foreignKey: 'id_producto',
-  as: 'inventario'
+  as: 'inventario',
 });
 
 Inventario.belongsTo(Product, {
   foreignKey: 'id_producto',
-  as: 'producto'
+  as: 'producto',
 });
 
+// Asociación Product - MovimientoInventario
 Product.hasMany(MovimientoInventario, {
   foreignKey: 'id_producto',
-  as: 'movimientos'
+  as: 'movimientos',
 });
 
 MovimientoInventario.belongsTo(Product, {
   foreignKey: 'id_producto',
-  as: 'producto'
+  as: 'producto',
 });
