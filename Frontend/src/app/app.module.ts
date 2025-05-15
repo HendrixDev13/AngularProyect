@@ -29,6 +29,7 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
 
 
 
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -39,7 +40,8 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
     AddEditProductComponent,
     VentasComponent,
     ReportesComponent,
-    UsuariosComponent
+
+
 
   ],
   imports: [

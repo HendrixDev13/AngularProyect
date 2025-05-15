@@ -53,6 +53,7 @@
     "karma-jasmine-html-reporter": "~2.1.0",
     "nodemon": "^3.1.9",
     "ts-node-dev": "^2.0.0",
+    "tsx": "^4.19.4",
     "typescript": "~5.7.2"
   }
 }

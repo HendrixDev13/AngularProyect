@@ -1,0 +1,148 @@
+/* 🔘 Encabezado con ícono y contador */
+h2 {
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* 🟩 Botón agregar usuario */
+.btn-success {
+  background-color: #198754;
+  border-radius: 8px;
+  padding: 8px 20px;
+  font-weight: bold;
+  font-size: 15px;
+  box-shadow: 0 4px 10px rgba(25, 135, 84, 0.25);
+  transition: background-color 0.3s ease-in-out;
+}
+
+.btn-success:hover {
+  background-color: #157347;
+}
+
+/* 🧾 Tabla moderna */
+.table {
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: white;
+}
+
+.table thead th {
+  background-color: #212529;
+  color: #fff;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  padding: 12px;
+}
+
+.table td {
+  vertical-align: middle;
+  font-size: 15px;
+  padding: 12px 10px;
+}
+
+/* ✏️ Botón editar */
+.btn-warning {
+  background-color: #ffc107;
+  border: none;
+  font-weight: 600;
+  color: #212529;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-warning:hover {
+  background-color: #e0a800;
+}
+
+/* 🛑 Botón inhabilitar */
+.btn-danger {
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+}
+
+/* ✅ Botón habilitar */
+.btn-success.btn-sm {
+  font-weight: 600;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+/* 🔴 Fila inhabilitada */
+.inhabilitado {
+  background-color: #f8d7da !important;
+  color: #842029 !important;
+  font-style: italic;
+}
+
+.inhabilitado .badge {
+  opacity: 0.9;
+  filter: grayscale(20%);
+}
+
+.btn {
+  font-weight: 600;
+  border-radius: 8px;
+  padding: 6px 18px;
+}
+
+.btn i {
+  font-size: 1rem;
+}
+
+
+/* 🏷️ Badges (rol y estado) */
+.badge {
+  font-size: 13px;
+  padding: 6px 10px;
+  border-radius: 12px;
+  font-weight: 600;
+}
+
+.badge.bg-dark {
+  background-color: #343a40;
+}
+
+.badge.bg-info.text-dark {
+  background-color: #0dcaf0;
+  color: #1c1c1c;
+}
+
+.badge.bg-success {
+  background-color: #198754;
+}
+
+.badge.bg-danger {
+  background-color: #dc3545;
+}
+
+/* 🖱️ Hover en filas */
+.table tbody tr:hover {
+  background-color: #f1f1f1;
+  transition: background-color 0.2s ease-in-out;
+}
+
+/* Offcanvas personalizado */
+.offcanvas {
+  box-shadow: -2px 0 8px rgba(0, 0, 0, 0.15);
+  border-left: 1px solid #dee2e6;
+}
+
+.offcanvas-header {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+}
+
+.offcanvas-body label {
+  font-weight: 600;
+}
+
+.offcanvas .form-control,
+.offcanvas .form-select {
+  border-radius: 6px;
+  box-shadow: none;
+}

@@ -30,11 +30,19 @@ const routes: Routes = [
     component: ReportesComponent,
     canActivate: [AuthGuard]
   },
-  {
-    path: 'usuarios',
-    component: UsuariosComponent,
-    canActivate: [AuthGuard]
+    {
+    path: 'dashboard',
+    component: DashboardComponent,
+    canActivate: [AuthGuard]  // <-- Aquí se aplica el guard
   },
+  // app-routing.module.ts
+{
+  path: 'usuarios',
+  loadComponent: () =>
+    import('./components/usuarios/usuarios.component').then(m => m.UsuariosComponent),
+  canActivate: [AuthGuard]
+},
+
   { path: '**', redirectTo: '/login', pathMatch: 'full' }
 ];
 
