@@ -1,0 +1,49 @@
+<div class="container mt-4">
+
+  <!-- 🔝 BOTONES SUPERIORES -->
+  <div class="d-flex justify-content-end gap-3 px-4 pt-2 mb-3">
+    <span class="fw-semibold text-secondary d-flex align-items-center" style="cursor: pointer;" (click)="regresarAReportes()">
+      <i class="bi bi-arrow-left me-2"></i> Reportes
+    </span>
+
+    <span class="fw-semibold text-danger d-flex align-items-center" style="cursor: pointer;" (click)="cerrarSesion()">
+      <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+    </span>
+  </div>
+
+  <!-- 📋 TÍTULO -->
+  <h3 class="mb-3">
+    <i class="bi bi-box-seam me-2"></i>
+    Reporte de Inventario Actual
+  </h3>
+
+  <!-- 📤 EXPORTAR -->
+  <button class="btn btn-outline-success mb-3" (click)="exportarExcel()">
+    <i class="bi bi-file-earmark-excel me-2"></i> Exportar a Excel
+  </button>
+
+  <!-- 📦 TABLA -->
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Producto</th>
+        <th>Stock</th>
+        <th>Precio Venta</th>
+        <th>Precio Costo</th>
+        <th>Valor Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of inventario">
+        <td>{{ item.Producto }}</td>
+        <td>{{ item.Stock }}</td>
+        <td>Q {{ item.PrecioVenta | number: '1.2-2' }}</td>
+        <td>Q {{ item.PrecioCosto | number: '1.2-2' }}</td>
+        <td>Q {{ item.ValorTotal | number: '1.2-2' }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="inventario.length === 0" class="text-muted">No hay productos registrados en el inventario.</p>
+</div>
+

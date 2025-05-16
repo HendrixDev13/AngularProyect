@@ -1,0 +1,84 @@
+<div class="container mt-4">
+  <!-- BOTONES SUPERIORES -->
+<div class="d-flex justify-content-end gap-3 px-4 pt-4 mb-3">
+  <span
+    class="fw-semibold text-secondary d-flex align-items-center"
+    style="cursor: pointer; min-width: 100px;"
+    (click)="regresarAReportes()"
+  >
+    <i class="bi bi-arrow-left me-2"></i> Reportes
+  </span>
+
+  <span
+    class="fw-semibold text-danger d-flex align-items-center"
+    style="cursor: pointer;"
+    (click)="cerrarSesion()"
+  >
+    <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+  </span>
+</div>
+
+
+  <h3 class="mb-3">
+    <i class="bi bi-clipboard-data me-2"></i>
+    Reporte de Ventas Totales
+  </h3>
+
+<!-- BOTÓN PARA MOSTRAR/OCULTAR FILTRO -->
+<button class="btn btn-outline-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtroVentas">
+  <i class="bi bi-funnel-fill me-2"></i> Mostrar / Ocultar Filtro
+</button>
+
+<!-- BLOQUE COLAPSABLE -->
+<div class="collapse mb-3" id="filtroVentas">
+  <div class="card card-body border-primary">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Desde</label>
+        <input type="date" class="form-control" [(ngModel)]="filtro.desde" />
+      </div>
+      <div class="col-md-4">
+        <label class="form-label fw-bold">Hasta</label>
+        <input type="date" class="form-control" [(ngModel)]="filtro.hasta" />
+      </div>
+      <div class="col-md-2 d-grid">
+        <button class="btn btn-primary" (click)="filtrarVentas()">
+          <i class="bi bi-search me-1"></i> Filtrar
+        </button>
+      </div>
+      <div class="col-md-2 d-grid">
+        <button class="btn btn-secondary" (click)="limpiarFiltro()">
+          <i class="bi bi-x-circle me-1"></i> Limpiar
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+    <!-- ✅ BOTÓN PARA EXPORTAR -->
+  <button class="btn btn-outline-success mb-3" (click)="exportarExcel()">
+    <i class="bi bi-file-earmark-excel me-2"></i> Exportar a Excel
+  </button>
+
+
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Mes</th>
+        <th>Total Ventas (Q)</th>
+        <th>% del año</th>
+        <th>Generado el</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let venta of ventas">
+        <td>{{ venta.Mes }}</td>
+        <td>Q {{ venta.TotalVentas | number: '1.2-2' }}</td>
+        <td>{{ venta.PorcentajeVentas }}%</td>
+        <td>{{ venta.FechaGeneracion }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p *ngIf="ventas.length === 0" class="text-muted">No hay reportes disponibles.</p>
+</div>

@@ -10,7 +10,7 @@ import {
 } from '@angular/ssr/node';
 import routesUsers from './routes/user';
 import './models/associations'; // Importa las asociaciones
-
+import reportesRoutes from './routes/reportes';
 
 const serverDistFolder = path.resolve();
 const browserDistFolder = path.resolve(serverDistFolder, '../browser');
@@ -29,6 +29,7 @@ app.use(express.json()); // MUY importante para POST/PUT en futuro
 app.use('/api/products', productRoutes);
 app.use('/api/movimientos', movimientosRoutes);
 app.use('/api/users', routesUsers);   
+app.use('/api/reportes', reportesRoutes);
 
 // ✅ ARCHIVOS ESTÁTICOS (angular build)
 app.use(
