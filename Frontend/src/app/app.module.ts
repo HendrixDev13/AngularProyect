@@ -25,6 +25,13 @@ import { AddEditProductComponent } from './components/add-edit-product/add-edit-
 import { VentasComponent } from './components/ventas/ventas.component';
 import { ReportesComponent } from './components/reportes/reportes.component';
 import { UsuariosComponent } from './components/usuarios/usuarios.component';
+import { ReporteVentasComponent } from './components/reportes/reporte-ventas/reporte-ventas.component';
+import { ReporteGananciasComponent } from './components/reportes/reporte-ganancias/reporte-ganancias.component';
+import { ReporteInventarioComponent } from './components/reportes/reporte-inventario/reporte-inventario.component';
+import { ReporteCostoVentasComponent } from './components/reportes/reporte-costo-ventas/reporte-costo-ventas.component';
+import { GraficoVentasComponent } from './components/reportes/grafico-ventas/grafico-ventas.component';
+import { GraficoGananciasComponent } from './components/reportes/grafico-ganancias/grafico-ganancias.component';
+import { NgChartsModule } from 'ng2-charts';
 
 
 
@@ -40,6 +47,12 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
     AddEditProductComponent,
     VentasComponent,
     ReportesComponent,
+    ReporteVentasComponent,
+    ReporteGananciasComponent,
+    ReporteInventarioComponent,
+    ReporteCostoVentasComponent,
+    GraficoVentasComponent,
+    GraficoGananciasComponent,
 
 
 
@@ -54,8 +67,8 @@ import { UsuariosComponent } from './components/usuarios/usuarios.component';
     }), // Por ahora rutas vacías, podemos agregarlas luego
     AppRoutingModule,
     HttpClientModule,
-    FormsModule// Importa HttpClientModule aquí
-  ],
+    FormsModule,
+    NgChartsModule,],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AddTokenInterceptor, multi: true}, // Asegúrate de importar el interceptor
   ],

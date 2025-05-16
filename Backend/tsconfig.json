@@ -13,7 +13,7 @@
     "resolveJsonModule": true
   },
   "ts-node": {
-    "esm": true,
+    "esm": false,
     "experimentalSpecifierResolution": "node"
   },
   "include": ["src/**/*"],
