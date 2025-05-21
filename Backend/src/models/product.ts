@@ -1,22 +1,65 @@
-import { DataTypes } from 'sequelize';
+import { DataTypes, Model, InferAttributes, InferCreationAttributes, CreationOptional } from 'sequelize';
 import db from '../database/config';
+import Inventario from './inventario';
 
-const Product = db.define('Product', {
+class Producto extends Model<
+  InferAttributes<Producto>,
+  InferCreationAttributes<Producto>
+> {
+  declare id_producto: CreationOptional<number>;
+  declare CodigoBarras: string;
+  declare ProductoNombre: string;
+  declare Modelo: string;
+  declare Marca: string;
+  declare Descripcion: string;
+  declare Color: string;
+  declare PrecioVenta: number;
+  declare PrecioCosto: number;
+  declare inventario?: Inventario;
+}
+
+Producto.init({
   id_producto: {
     type: DataTypes.INTEGER,
     primaryKey: true,
     autoIncrement: true
   },
-  CodigoBarras: DataTypes.STRING(50),
-  ProductoNombre: DataTypes.STRING(100),
-  Modelo: DataTypes.STRING(50),
-  Marca: DataTypes.STRING(50),
-  Descripcion: DataTypes.TEXT,
-  Color: DataTypes.STRING(30),
-  PrecioVenta: DataTypes.DECIMAL(10, 2)
+  CodigoBarras: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  ProductoNombre: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  Modelo: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  Marca: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  Descripcion: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  Color: {
+    type: DataTypes.STRING,
+    allowNull: false
+  },
+  PrecioVenta: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  },
+  PrecioCosto: {
+    type: DataTypes.DECIMAL(10, 2),
+    allowNull: false
+  }
 }, {
+  sequelize: db,
   tableName: 'tbl_Producto',
   timestamps: false
 });
 
-export default Product; // 👈 ESTA LÍNEA es esencial
+export default Producto;

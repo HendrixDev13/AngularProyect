@@ -25,22 +25,24 @@ export class ListProductsComponent implements OnInit {
   productoSeleccionadoId: number | null = null;
   movimientos: any[] = [];
 
-  nuevoProducto = {
+    nuevoProducto = {
     producto: {
-      CodigoBarras: '',
-      ProductoNombre: '',
-      Modelo: '',
-      Marca: '',
-      Descripcion: '',
-      Color: '',
-      PrecioVenta: 0
-    },
+    CodigoBarras: '',
+    ProductoNombre: '',
+    Modelo: '',
+    Marca: '',
+    Descripcion: '',
+    Color: '',
+    PrecioVenta: 0,
+    PrecioCosto: 0  // ✅ Añadir esta línea
+  },
+
+
     inventario: {
       StockActual: 0,
       FechaIngreso: new Date().toISOString().split('T')[0],
       Descripcion: '',
       PrecioTotal: 0,
-      PrecioVentaInicial: 0
     }
   };
 
@@ -54,11 +56,11 @@ export class ListProductsComponent implements OnInit {
       Descripcion: string;
       Color: string;
       PrecioVenta: number;
+    PrecioCosto: number;
     };
     inventario: {
       StockActual: number;
       Descripcion: string;
-      PrecioVentaInicial: number;
     };
     MotivoMovimiento: string;
   } | null = null;
@@ -89,19 +91,19 @@ export class ListProductsComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: (data) => {
         this.productos = data
-          .filter(p => p.ProductoNombre && p.PrecioVenta !== null)
-          .map(p => {
-            const stock = p.inventario?.StockActual ?? 0;
-            const costo = p.inventario?.PrecioVentaInicial ?? p.PrecioVenta ?? 0;
-            const descripcion = p.inventario?.Descripcion ?? p.Descripcion ?? 'Sin descripción';
+        .filter(p => p.ProductoNombre && p.PrecioVenta !== null)
+        .map(p => {
+          const stock = p.inventario?.StockActual ?? 0;
+          const descripcion = p.inventario?.Descripcion ?? p.Descripcion ?? 'Sin descripción';
 
-            return {
-              ...p,
-              StockActual: stock,
-              PrecioCosto: costo,
-              Descripcion: descripcion
-            };
-          });
+          return {
+            ...p,
+            StockActual: stock,
+            Descripcion: descripcion
+            // 👈 ya no machacamos PrecioCosto
+          };
+        });
+
 
         this.calcularTotal();
       },
@@ -156,6 +158,8 @@ export class ListProductsComponent implements OnInit {
   registrarProducto(): void {
     const p = this.nuevoProducto.producto;
     const inv = this.nuevoProducto.inventario;
+    console.log('📦 Producto a registrar:', p);
+    console.log('📦 Inventario:', inv);
 
     if (
       !p.CodigoBarras.trim() ||
@@ -164,8 +168,8 @@ export class ListProductsComponent implements OnInit {
       !p.Marca.trim() ||
       !p.Color.trim() ||
       p.PrecioVenta <= 0 ||
-      inv.StockActual <= 0 ||
-      inv.PrecioVentaInicial <= 0
+      p.PrecioCosto <= 0 ||
+      inv.StockActual <= 0
     ) {
       this.toastr.warning('⚠️ Por favor, complete todos los campos obligatorios.');
       return;
@@ -173,7 +177,7 @@ export class ListProductsComponent implements OnInit {
 
     const ahora = new Date();
     inv.FechaIngreso = ahora.toISOString().split('T')[0];
-    inv.PrecioTotal = inv.StockActual * inv.PrecioVentaInicial;
+    inv.PrecioTotal = inv.StockActual * p.PrecioCosto;
 
     this.productService.registrarProducto(this.nuevoProducto).subscribe({
       next: () => {
@@ -227,14 +231,14 @@ export class ListProductsComponent implements OnInit {
         Marca: '',
         Descripcion: '',
         Color: '',
-        PrecioVenta: 0
+        PrecioVenta: 0,
+        PrecioCosto: 0
       },
       inventario: {
         StockActual: 0,
         FechaIngreso: new Date().toISOString().split('T')[0],
         Descripcion: '',
         PrecioTotal: 0,
-        PrecioVentaInicial: 0
       }
     };
   }
@@ -249,11 +253,11 @@ export class ListProductsComponent implements OnInit {
         Marca: producto.Marca,
         Descripcion: producto.Descripcion,
         Color: producto.Color,
-        PrecioVenta: producto.PrecioVenta
+        PrecioVenta: producto.PrecioVenta,
+        PrecioCosto: producto.PrecioCosto
       },
       inventario: {
         StockActual: producto.StockActual,
-        PrecioVentaInicial: producto.PrecioCosto,
         Descripcion: producto.Descripcion,
       },
       MotivoMovimiento: ''

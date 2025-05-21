@@ -39,6 +39,10 @@ id_movimiento: {
     type: DataTypes.STRING(100),
     allowNull: true
   },  
+  PrecioUnitario: {
+  type: DataTypes.DECIMAL(10, 2),
+  allowNull: true
+},
 }, {
   tableName: 'tbl_MovimientosInventario',
   timestamps: false,

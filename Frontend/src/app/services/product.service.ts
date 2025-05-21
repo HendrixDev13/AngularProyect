@@ -24,11 +24,10 @@ export class ProductService {
   return this.http.get<Product[]>(`${this.myAppUrl}${this.myApiUrl}`);
    }
 
-   getByCodigoBarras(codigo: string) {
-    // ✅ Correcto
-    return this.http.get<any>(`http://localhost:3001/api/products/${codigo}`);
-
+  getByCodigoBarras(codigo: string) {
+    return this.http.get<Product>(`${this.myAppUrl}${this.myApiUrl}/codigo/${codigo}`);
   }
+
 
   registrarProducto(data: any) {
     return this.http.post(`${this.myAppUrl}${this.myApiUrl}/registrar`, data);
@@ -54,7 +53,29 @@ export class ProductService {
     return this.http.get<any[]>(`${this.myAppUrl}/api/movimientos/producto/${id_producto}`);
   }
 
+  descontarStock(id_producto: number, cantidad: number): Observable<any> {
+    return this.http.post<any>(
+      `${this.myAppUrl}/api/movimientos/descontar`,
+      { id_producto, cantidad }
+    );
+  }
 
+  guardarVenta(data: {
+    usuario: number;
+    productos: { id: number; cantidad: number; precio: number; subtotal: number }[];
+  }): Observable<any> {
+    return this.http.post<any>(
+      `${this.myAppUrl}/api/ventas`,
+      data
+    );
+  }
+
+   reponerStock(id_producto: number, cantidad: number): Observable<any> {
+    return this.http.post<any>(
+      `${this.myAppUrl}/api/movimientos/reponer`,
+      { id_producto, cantidad }
+    );
+  }
 
 
 

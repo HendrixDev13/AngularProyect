@@ -12,11 +12,12 @@ export class UserService {
   constructor(private http: HttpClient) {}
 
   /** Login */
-  login(user: LoginUser): Observable<{ token: string; rol: string; nombre: string }> {
-    return this.http.post<{ token: string; rol: string; nombre: string }>(
-      `${this.base}/login`, user
+  login(data: any) {
+    return this.http.post<{ token: string, rol: string, nombre: string, id_usuario: number }>(
+      `${this.base}/login`, data
     );
   }
+
 
   /** GET todos los usuarios */
 getUsuarios(): Observable<any[]> {

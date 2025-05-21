@@ -1,21 +1,33 @@
 import express from 'express';
 import cors from 'cors';
-import reportesRoutes from './routes/reportes';
-import productRoutes from './routes/product';
+import db from './database/config';
+import ventasRoutes from './routes/ventas';
+
+
+// Importar rutas
 import movimientosRoutes from './routes/movimientos';
 import userRoutes from './routes/user';
+import productRoutes from './routes/product';
+import reportesRoutes from './routes/reportes';
+// Asociaciones (esto es clave para que funcione el login)
+import './models/associations';
 
 const app = express();
-const PORT = 3001;
-
-app.use(cors({ origin: 'http://localhost:4200', credentials: true }));
+app.use(cors());
 app.use(express.json());
 
-app.use('/api/products', productRoutes);
+// Montar rutas
+app.use('/api/products', productRoutes); // si tienes productos
 app.use('/api/movimientos', movimientosRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/ventas', ventasRoutes);
 app.use('/api/reportes', reportesRoutes);
+// Conexión a BD
+db.sync()
+  .then(() => console.log('✅ Base de datos conectada'))
+  .catch((err) => console.error('❌ Error al conectar base de datos:', err));
 
-app.listen(PORT, () => {
-  console.log(`✅ Backend dev server corriendo en http://localhost:${PORT}`);
+// Iniciar servidor
+app.listen(3001, () => {
+  console.log('🚀 Backend corriendo en http://localhost:3001');
 });

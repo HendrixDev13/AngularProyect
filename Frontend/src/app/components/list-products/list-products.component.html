@@ -47,7 +47,7 @@
           <input [(ngModel)]="nuevoProducto.producto.PrecioVenta" type="number" class="form-control mb-2" placeholder="Precio venta">
           <input [(ngModel)]="nuevoProducto.producto.Descripcion" class="form-control mb-2" placeholder="Descripción del producto">
           <input [(ngModel)]="nuevoProducto.inventario.StockActual" type="number" class="form-control mb-2" placeholder="Stock actual">
-          <input [(ngModel)]="nuevoProducto.inventario.PrecioVentaInicial" type="number" class="form-control mb-2" placeholder="Precio costo">
+          <input [(ngModel)]="nuevoProducto.producto.PrecioCosto" type="number" class="form-control mb-2" placeholder="Precio costo">
           <input [(ngModel)]="nuevoProducto.inventario.Descripcion" class="form-control mb-2" placeholder="Descripción inventario">
 
           <div class="mb-3">
@@ -85,7 +85,7 @@
           <input [(ngModel)]="productoEditando.producto.PrecioVenta" class="form-control mb-2" type="number" placeholder="Precio de venta">
 
           <input [(ngModel)]="productoEditando.inventario.StockActual" class="form-control mb-2" type="number" placeholder="Stock actual">
-          <input [(ngModel)]="productoEditando.inventario.PrecioVentaInicial" class="form-control mb-2" type="number" placeholder="Precio costo">
+          <input [(ngModel)]="productoEditando.producto.PrecioCosto" type="number" class="form-control mb-2" placeholder="Precio costo">
           <input [(ngModel)]="productoEditando.inventario.Descripcion" class="form-control mb-2" placeholder="Descripción inventario">
 
           <select [(ngModel)]="productoEditando.MotivoMovimiento" class="form-select mt-3">

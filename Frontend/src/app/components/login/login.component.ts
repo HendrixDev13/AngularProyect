@@ -50,10 +50,12 @@ togglePassword() {
 
     this._userService.login(user).subscribe({
       next: (res) => {
-        localStorage.setItem('token', res.token);
-        localStorage.setItem('rol', res.rol);
-        localStorage.setItem('nombre', res.nombre);
-
+      localStorage.setItem('token', res.token);
+      localStorage.setItem('usuario', JSON.stringify({
+      id_usuario: res.id_usuario,
+      nombre: res.nombre,
+      rol: res.rol
+    }));
         this.router.navigate(['/dashboard']);
         this.loading = false;
       },

@@ -2,17 +2,17 @@
   "name": "proyecto-sistema-ventas",
   "version": "0.0.0",
   "type": "commonjs",
-  "scripts": {
-    "ng": "ng",
-    "start:dev-backend": "ts-node src/backend-only.ts",
-    "start": "ts-node src/server.ts",
-    "build": "ng build",
-    "watch": "ng build --watch --configuration development",
-    "test": "ng test",
-    "serve:ssr:ProyectoSistemaVentas": "node dist/proyecto-sistema-ventas/server/server.mjs",
-    "dev": "ts-node-dev src/index.ts",
-    "typescript": "tsc --watch"
-  },
+ "scripts": {
+  "ng": "ng",
+  "start": "ts-node src/server.ts",
+  "start:backend": "ts-node-dev ./src/backend-only.ts",
+  "dev": "ts-node-dev src/server.ts",
+  "build": "ng build",
+  "watch": "ng build --watch --configuration development",
+  "test": "ng test",
+  "serve:ssr:ProyectoSistemaVentas": "node dist/proyecto-sistema-ventas/server/server.mjs",
+  "typescript": "tsc --watch"
+},
   "private": true,
   "dependencies": {
     "@angular/animations": "^19.1.0",

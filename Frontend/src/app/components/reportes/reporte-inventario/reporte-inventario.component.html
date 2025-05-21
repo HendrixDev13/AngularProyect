@@ -36,7 +36,7 @@
     <tbody>
       <tr *ngFor="let item of inventario">
         <td>{{ item.Producto }}</td>
-        <td>{{ item.Stock }}</td>
+        <td>{{ item.StockActual }}</td>
         <td>Q {{ item.PrecioVenta | number: '1.2-2' }}</td>
         <td>Q {{ item.PrecioCosto | number: '1.2-2' }}</td>
         <td>Q {{ item.ValorTotal | number: '1.2-2' }}</td>

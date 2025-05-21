@@ -1,1 +1,149 @@
-<p>ventas works!</p>
+<!-- ventas.component.html -->
+
+<!-- Campo oculto para lector de barras -->
+<input
+  #barcodeInput
+  type="text"
+  autocomplete="off"
+  (keydown.enter)="onBarcodeScanned(barcodeInput.value); barcodeInput.value='';"
+  style="position:absolute; left:-9999px; opacity:0;"
+/>
+
+<!-- HEADER -->
+<header class="ventas-header">
+  <button class="link-btn" routerLink="/dashboard">← Regresar a inicio</button>
+  <h2>Venta de Productos</h2>
+  <button class="link-btn" (click)="logout()">Cerrar sesión</button>
+</header>
+
+<!-- CONTENEDOR PRINCIPAL -->
+<div class="ventas-container">
+  <!-- Info Cajero / Factura / Fecha / Hora -->
+  <div class="ventas-info">
+    <div><strong>Cajero:</strong> {{ obtenerNombreUsuario() }}</div>
+    <div><strong>Recibo</strong> #{{ numeroFactura }}</div>
+    <div><strong>Fecha:</strong> {{ fecha | date:'dd-MM-yyyy' }}</div>
+    <div><strong>Hora:</strong> {{ horaActual }}</div>
+  </div>
+
+  <!-- Formulario de venta -->
+  <div class="row g-3 align-items-center mb-3">
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Cliente:</label>
+      <select class="form-select" [(ngModel)]="clienteSeleccionado">
+        <option [ngValue]="undefined" disabled>-- Selecciona un cliente --</option>
+        <option *ngFor="let c of clientes" [ngValue]="c.id">{{ c.nombre }}</option>
+      </select>
+    </div>
+
+    <div class="col-md-4">
+      <label class="form-label fw-bold">Producto:</label>
+       <input type="text"
+       class="form-control mb-1"
+       #filtroInput
+       placeholder="Buscar por nombre o código"
+       (input)="filtrarProductos(filtroInput.value)">
+
+          <select
+        class="form-select"
+        [(ngModel)]="productoSeleccionado">
+        <option [ngValue]="undefined" disabled>-- Selecciona un producto --</option>
+        <option *ngFor="let p of productosFiltrados" [ngValue]="p">
+          {{ p.ProductoNombre }} ({{ p.CodigoBarras }})
+        </option>
+      </select>
+
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label fw-bold">Cantidad:</label>
+      <input
+        type="number"
+        class="form-control"
+        [(ngModel)]="cantidadSeleccionada"
+        min="1"
+      />
+    </div>
+
+    <div class="col-md-2">
+      <label class="form-label fw-bold">Stock:</label>
+      <input
+        type="text"
+        class="form-control"
+        [value]="productoSeleccionado?.inventario?.StockActual ?? 0"
+        disabled
+      />
+    </div>
+  </div>
+
+  <!-- Botones de acción -->
+  <div class="d-flex gap-2 mb-3">
+    <button class="btn btn-primary" (click)="agregarAlCarrito()">➕ Agregar</button>
+    <button class="btn btn-danger" (click)="limpiarCarrito()">🗑 Limpiar</button>
+  </div>
+
+  <!-- Tabla de carrito -->
+  <table class="table table-striped table-bordered mb-4">
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Precio</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of carrito">
+        <td>{{ item.nombre }}</td>
+        <td>Q {{ item.precio | number:'1.2-2' }}</td>
+        <td>{{ item.cantidad }}</td>
+        <td>Q {{ item.subtotal | number:'1.2-2' }}</td>
+        <td>
+          <button class="btn btn-sm btn-danger" (click)="eliminarDelCarrito(item.id)">
+            ❌
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- Botón Pagar -->
+  <div class="text-end">
+    <button class="btn btn-honda btn-lg" (click)="openPaymentModal()">
+      💰 Pagar
+    </button>
+  </div>
+</div>
+
+<!-- 1er Modal: Ingresar monto -->
+<div class="modal-backdrop" *ngIf="showPaymentModal">
+  <div class="modal-dialog">
+    <h4>Realizar pago</h4>
+    <p><strong>Total a pagar:</strong> Q{{ total.toFixed(2) }}</p>
+    <label for="paidAmount">Monto pagado:</label>
+    <input
+      id="paidAmount"
+      type="number"
+      [(ngModel)]="paidAmount"
+      class="form-control mb-3"
+    />
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-link" (click)="showPaymentModal = false">Cancelar</button>
+      <button class="btn btn-primary" (click)="confirmPayment()">Confirmar Pago</button>
+    </div>
+  </div>
+</div>
+
+<!-- 2º Modal: Resumen y vuelto -->
+<div class="modal-backdrop" *ngIf="showSummaryModal">
+  <div class="modal-dialog">
+    <h4>Resumen de Pago</h4>
+    <p><strong>Total:</strong> Q{{ total.toFixed(2) }}</p>
+    <p><strong>Pagado:</strong> Q{{ paidAmount.toFixed(2) }}</p>
+    <p><strong>Cambio:</strong> Q{{ changeAmount.toFixed(2) }}</p>
+    <div class="d-flex justify-content-end mt-3">
+      <button class="btn btn-honda" (click)="acceptSummary()">Imprimir Recibo</button>
+    </div>
+  </div>
+</div>
