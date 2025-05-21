@@ -90,9 +90,11 @@ export const loginUser = async (req: Request, res: Response) => {
 
     res.json({
       token,
-      rol: user.rol.NombreRol,
-      nombre: user.Nombre
+      id_usuario: user.id_usuario,
+      nombre: user.Nombre,
+      rol: user.rol.NombreRol
     });
+
     
   } catch (err: any) {
   console.error('❌ Error en login:', err?.parent ?? err);

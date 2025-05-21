@@ -3,6 +3,8 @@ import Rol from './rol';
 import Product from './product';
 import Inventario from './inventario';
 import MovimientoInventario from './movimientoInventario';
+import Venta from './venta';
+import DetalleVenta from './detalleVenta';
 
 // Asociación Rol - User
 Rol.hasMany(User, {
@@ -36,3 +38,6 @@ MovimientoInventario.belongsTo(Product, {
   foreignKey: 'id_producto',
   as: 'producto',
 });
+
+Venta.hasMany(DetalleVenta, { foreignKey: 'id_venta' });
+DetalleVenta.belongsTo(Venta, { foreignKey: 'id_venta' });

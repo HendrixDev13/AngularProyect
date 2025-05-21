@@ -12,6 +12,8 @@ import routesUsers from './routes/user';
 import './models/associations'; // Importa las asociaciones
 import reportesRoutes from './routes/reportes';
 
+
+
 const serverDistFolder = path.resolve();
 const browserDistFolder = path.resolve(serverDistFolder, '../browser');
 

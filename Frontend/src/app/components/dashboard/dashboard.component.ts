@@ -14,8 +14,9 @@ export class DashboardComponent implements OnInit {
   constructor(private router: Router) {}
 
   ngOnInit(): void {
-    this.rolUsuario = localStorage.getItem('rol') || '';
-    this.nombreUsuario = localStorage.getItem('nombre') || '';
+    const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+    this.nombreUsuario = usuario.nombre;
+    this.rolUsuario = usuario.rol;
   }
 
   goTo(ruta: string): void {

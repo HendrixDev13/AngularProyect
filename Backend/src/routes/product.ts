@@ -11,7 +11,7 @@ import { actualizarProductoConMovimiento } from '../controllers/product';
 const router = express.Router();
 
 router.get('/', getProducts);
-router.get('/:codigo', getProductByCodigoBarras);
+router.get('/codigo/:codigo', getProductByCodigoBarras);
 router.post('/registrar', registrarProductoConInventario);
 router.delete('/:id', deleteProduct);
 router.put('/actualizar/:id', actualizarProductoConMovimiento);

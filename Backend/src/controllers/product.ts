@@ -8,14 +8,16 @@ import db from '../database/config';
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const productos = await Product.findAll({
-      include: [
-        {
-          model: Inventario,
-          as: 'inventario',
-          attributes: ['StockActual', 'PrecioVentaInicial', 'Descripcion']
-        }
-      ]
-    });
+    attributes: ['id_producto', 'ProductoNombre', 'CodigoBarras', 'PrecioVenta', 'PrecioCosto', 'Modelo', 'Marca', 'Color', 'Descripcion'], // ✅ incluye PrecioCosto
+    include: [
+      {
+        model: Inventario,
+        as: 'inventario',
+        attributes: ['StockActual', 'Descripcion']
+      }
+    ]
+  });
+
 
     res.json(productos);
   } catch (error) {
@@ -47,23 +49,79 @@ export const getProductByCodigoBarras = async (req: Request, res: Response) => {
 export const registrarProductoConInventario = async (req: Request, res: Response) => {
   try {
     const { producto, inventario } = req.body;
-    const nuevoProducto = await Product.create(producto);
+
+    // ✅ Validación obligatoria
+    if (
+      !producto ||
+      !producto.ProductoNombre ||
+      !producto.PrecioVenta ||
+      !producto.PrecioCosto ||
+      !producto.CodigoBarras ||
+      !producto.Modelo ||
+      !producto.Marca ||
+      !producto.Color
+    ) {
+      return res.status(400).json({ mensaje: 'Faltan campos obligatorios del producto.' });
+    }
+
+    if (
+      !inventario ||
+      inventario.StockActual <= 0 
+    ) {
+      return res.status(400).json({ mensaje: 'Faltan campos obligatorios del inventario.' });
+    }
+
+    // ✅ Confirmar lo que llega (opcional para debug)
+    console.log('📦 Producto recibido:', producto);
+    console.log('📦 Inventario recibido:', inventario);
+
+    // ✅ Guardar el producto incluyendo PrecioCosto
+    const nuevoProducto = await Product.create({
+    CodigoBarras: producto.CodigoBarras,
+    ProductoNombre: producto.ProductoNombre,
+    Modelo: producto.Modelo,
+    Marca: producto.Marca,
+    Descripcion: producto.Descripcion,
+    Color: producto.Color,
+    PrecioVenta: producto.PrecioVenta,
+    PrecioCosto: producto.PrecioCosto
+  });
+
     const id_producto = nuevoProducto.getDataValue('id_producto');
 
+    // Calcular el total del inventario
     const datosInventario = {
       ...inventario,
       id_producto,
-      PrecioTotal: inventario.StockActual * inventario.PrecioVentaInicial,
+      PrecioTotal: inventario.StockActual * producto.PrecioCosto,
     };
 
     await Inventario.create(datosInventario);
+  await MovimientoInventario.create({
+    id_producto: id_producto,
+    TipoMovimiento: 'Entrada',
+    Cantidad: inventario.StockActual,
+    Origen: 'Inventario',
+    Referencia: null,
+    Motivo: 'Registro inicial',
+    PrecioUnitario: producto.PrecioCosto, // 👈 Aquí guardas el precio
+    FechaMovimiento: db.literal('GETDATE()')
+  });
+     return res.status(201).json({
+      mensaje: 'Producto e inventario registrados correctamente',
+      producto: nuevoProducto
+    });
 
-    res.status(201).json({ mensaje: 'Producto e inventario registrados correctamente', producto: nuevoProducto });
   } catch (error) {
     console.error('❌ Error al registrar producto con inventario:', error);
     res.status(500).json({ mensaje: 'Error al registrar producto e inventario' });
+
+    return res.status(500).json({
+      mensaje: 'Error al registrar producto e inventario'
+    });
   }
 };
+
 
 export const deleteProduct = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -117,10 +175,16 @@ export const actualizarProductoConMovimiento = async (req: Request, res: Respons
     if (!productoExistente) {
       return res.status(404).json({ msg: 'Producto no encontrado' });
     }
-
+    
     // Guardar stock anterior para registrar movimiento si cambia
-    const inventarioExistente = productoExistente.getDataValue('inventario');
-    const stockAnterior = inventarioExistente?.StockActual ?? 0;
+  const inventarioExistente = productoExistente.inventario;
+
+  const stockAnterior = inventarioExistente?.StockActual ?? 0;
+
+  if (inventarioExistente) {
+    await inventarioExistente.update(inventario);
+  }
+
 
     // Actualizar datos del producto
     await productoExistente.update(producto);
@@ -146,6 +210,7 @@ export const actualizarProductoConMovimiento = async (req: Request, res: Respons
           Origen         : 'Inventario',
           Referencia     : null,                 // o el número que corresponda
           Motivo         : motivo,
+          PrecioUnitario: producto.PrecioCosto, // ✅ nuevo campo
           FechaMovimiento: db.literal('GETDATE()')   // 👈 deja que SQL Server genere la fecha
         });
         
