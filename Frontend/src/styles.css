@@ -1,0 +1,48 @@
+/* You can add global styles to this file, and also import other style files */
+.wrapper{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.logo{
+height: 130px;
+margin-bottom: 10px;
+}
+
+
+.body{
+max-width: 300px;
+width: 100%;
+text-align: center;
+}
+
+::ng-deep .toast-success {
+  background-color: #dc3545 !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+::ng-deep .toast-error {
+  background-color: #000 !important;
+  color: #fff !important;
+  font-weight: bold;
+}
+
+::ng-deep .toast-warning {
+  background-color: #ffc107 !important;
+  color: #000 !important;
+  font-weight: bold;
+}
+
+::ng-deep .toast-title {
+  font-size: 14px;
+}
+
+::ng-deep .toast-message i {
+  margin-right: 8px;
+  font-size: 18px;
+}
+

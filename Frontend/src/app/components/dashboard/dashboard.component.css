@@ -1,0 +1,126 @@
+:host {
+  display: block;
+  height: 100vh;
+  overflow: hidden;
+}
+
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+}
+
+/* Logo */
+.logo-container {
+  text-align: center;
+  width: 100%;
+}
+
+.logo {
+  max-width: 1500px;
+}
+
+/* Línea superior */
+.divider {
+  height: 4px;
+  width: 100%;
+  background-color: #000;
+  margin: 10px 0 30px 0;
+}
+
+.grid-buttons-admin {
+  padding-top: 75px;
+  display: grid;
+  grid-template-columns: repeat(2, auto);
+  gap: 80px 200px;
+  justify-content: center;
+  align-items: center;
+  padding-bottom: 30px;
+}
+
+.grid-buttons-vendedor {
+  padding-top: 150px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 200px;
+  flex-wrap: wrap;
+  padding-bottom: 30px;
+}
+
+
+/* Estilo general de botones */
+.dashboard-btn {
+  width: 300px;             /* ✅ Ancho uniforme */
+  height: 80px;             /* ✅ Alto uniforme */
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: white;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.dashboard-btn:hover {
+  transform: scale(1.05);
+}
+
+.ventas, .usuarios {
+  background-color: black;
+}
+
+.reportes, .inventario {
+  background-color: #cc0000;
+}
+
+/* Línea inferior para Vendedor */
+.bottom-divider {
+  height: 4px;
+  width: 100%;
+  background-color: #000;
+  margin-top: auto;
+}
+
+/* Línea inferior para Administrador */
+.bottom-strong-divider {
+  height: 4px;
+  width: 100%;
+  background-color: #000;
+  margin-top: auto;
+}
+
+/* Footer fijo abajo */
+.footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 25px 40px;
+  font-size: 1.5rem;
+  font-weight: 500;
+  background-color: white;
+  position: relative;
+  z-index: 2;
+}
+
+/* Botón cerrar sesión */
+.logout-btn {
+  padding: 8px 18px;
+  font-size: 1.3rem;
+  border: none;
+  background-color: #cc0000;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #a60000;
+}

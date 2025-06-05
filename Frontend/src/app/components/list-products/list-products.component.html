@@ -1,0 +1,327 @@
+<!-- CONTENEDOR GENERAL -->
+<div class="container mt-4">
+
+    <!-- ENCABEZADO -->
+    <div class="d-flex justify-content-between align-items-center bg-danger text-white p-3 rounded mb-4">
+        <h1 class="text-center flex-grow-1 m-0">INVENTARIO</h1>
+
+        <div class="d-flex gap-2 ms-3">
+            <button class="btn btn-light" (click)="regresarInicio()">
+                <i class="bi bi-house-door"></i> Inicio
+            </button>
+            <button class="btn btn-light" (click)="cerrarSesion()">
+                <i class="bi bi-box-arrow-right"></i> Cerrar sesión
+            </button>
+        </div>
+    </div>
+
+    <!-- FECHA Y HORA -->
+    <div class="d-flex justify-content-end gap-3 mb-3">
+        <span><i class="bi bi-calendar-event"></i> {{ fechaHoy | date:'dd-MM-yyyy' }}</span>
+        <span><i class="bi bi-clock"></i> {{ horaActual }}</span>
+    </div>
+
+    <!-- BUSCADOR CÓDIGO DE BARRAS O NOMBRE -->
+    <div class="input-group mb-3">
+        <input type="text" class="form-control" placeholder="Escanear o ingresar código de barras o nombre"
+            [(ngModel)]="filtroBusqueda" (input)="aplicarFiltro()">
+        <button class="btn btn-secondary" type="button" (click)="enfocarCampo()">
+            <i class="bi bi-upc-scan"></i> Escanear
+        </button>
+        <button class="btn btn-danger" type="button" (click)="buscarProductoManual()">
+            <i class="bi bi-search"></i> Buscar
+        </button>
+    </div>
+
+    <!-- MENSAJE DE ERROR -->
+    <div *ngIf="busquedaFallida" class="text-danger mb-2">
+        Producto no encontrado.
+    </div>
+
+    <!-- BOTÓN AGREGAR PRODUCTO -->
+    <div class="d-flex justify-content-end mb-3">
+        <button class="btn btn-danger" (click)="abrirModal()">
+            <i class="bi bi-plus-circle-fill"></i> Agregar producto
+        </button>
+    </div>
+
+    <!-- TABLA DE PRODUCTOS -->
+<div class="table-responsive">
+    <table class="table table-bordered table-striped mt-4">
+        <thead class="table-dark">
+            <tr>
+                <th>Código de Barras</th>
+                <th>Producto</th>
+                <th>Marca</th>
+                <th>Precio</th>
+                <th>Costo</th>
+                <th>Stock</th>
+                <th>Descripción</th>
+                <th>Estado</th> <!-- 🚀 NUEVA COLUMNA -->
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let p of productosFiltradosList" [class.table-success]="p.id_producto === ultimoProductoId">
+                <td>{{ p.CodigoBarras }}</td>
+                <td>{{ p.ProductoNombre }}</td>
+                <td>{{ p.Marca }}</td>
+                <td>Q{{ p.PrecioVenta }}</td>
+                <td>Q{{ p.PrecioCosto }}</td>
+                <td>{{ p.StockActual }}</td>
+                <td>{{ p.Descripcion }}</td>
+                <td>
+                    <span class="badge"
+                          [ngClass]="p.Estado === 'Activo' ? 'bg-success' : 'bg-secondary'">
+                        {{ p.Estado }}
+                    </span>
+                </td>
+                <td>
+                    <button class="btn btn-sm btn-outline-primary me-2" (click)="abrirModalEditar(p)">
+                        <i class="bi bi-pencil-square"></i> Editar
+                    </button>
+                    <!-- 🚀 Botón Activar/Inactivar -->
+                    <button class="btn btn-sm"
+                            [ngClass]="p.Estado === 'Activo' ? 'btn-outline-warning' : 'btn-outline-success'"
+                            (click)="toggleEstado(p)">
+                        <i class="bi" [ngClass]="p.Estado === 'Activo' ? 'bi-eye-slash' : 'bi-eye'"></i>
+                        {{ p.Estado === 'Activo' ? 'Inactivar' : 'Activar' }}
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+    <!-- TOTAL EN INVENTARIO -->
+    <div class="d-flex justify-content-between align-items-center mt-4">
+        <!--
+        <div>
+            <button class="btn btn-outline-danger">
+                <i class="bi bi-arrow-clockwise"></i> Actualizar Inventario
+            </button>
+            <button class="btn btn-outline-primary ms-2">
+                <i class="bi bi-clipboard"></i> Movimientos
+            </button>
+        </div>
+-->
+       <h4>
+        <i class="bi bi-currency-dollar text-warning"></i>
+        <strong>Total en Inventario:</strong>
+        {{ totalInventarioFormateado }}
+      </h4>
+
+
+    </div>
+
+
+</div> <!-- CIERRE DEL CONTAINER -->
+
+<!-- MODAL PARA AGREGAR PRODUCTO -->
+<div class="modal fade" id="modalProducto" tabindex="-1" aria-labelledby="modalProductoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalProductoLabel">Registrar producto</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+
+                <div class="mb-2">
+                    <label class="form-label">Código de barras</label>
+                    <input [(ngModel)]="nuevoProducto.producto.CodigoBarras" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Nombre</label>
+                    <input [(ngModel)]="nuevoProducto.producto.ProductoNombre" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Modelo</label>
+                    <input [(ngModel)]="nuevoProducto.producto.Modelo" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Marca</label>
+                    <input [(ngModel)]="nuevoProducto.producto.Marca" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Color</label>
+                    <input [(ngModel)]="nuevoProducto.producto.Color" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Precio venta</label>
+                    <input [(ngModel)]="nuevoProducto.producto.PrecioVenta" type="number" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Descripción del producto</label>
+                    <input [(ngModel)]="nuevoProducto.producto.Descripcion" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Stock actual</label>
+                    <input [(ngModel)]="nuevoProducto.inventario.StockActual" type="number" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Precio costo</label>
+                    <input [(ngModel)]="nuevoProducto.producto.PrecioCosto" type="number" class="form-control">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label">Descripción inventario</label>
+                    <input [(ngModel)]="nuevoProducto.inventario.Descripcion" class="form-control">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Fecha ingreso</label>
+                    <input class="form-control" [value]="nuevoProducto.inventario.FechaIngreso" readonly disabled type="date">
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-success" (click)="registrarProducto()" data-bs-dismiss="modal">
+                    <i class="bi bi-save"></i> Guardar producto
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL PARA INGRESAR PIN -->
+<div class="modal fade" id="modalPin" tabindex="-1" aria-labelledby="modalPinLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content border-0 shadow rounded">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="modalPinLabel">PIN de seguridad</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <input type="password" [(ngModel)]="pin" class="form-control" maxlength="4"
+                    placeholder="Ingrese su PIN">
+            </div>
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button class="btn btn-danger" (click)="confirmarPin()">Aceptar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL DE EDICIÓN DE PRODUCTO -->
+<div class="modal fade" id="modalEditarProducto" tabindex="-1" aria-labelledby="modalEditarProductoLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content border-0 shadow rounded">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalEditarProductoLabel">Editar producto</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div *ngIf="productoEditando">
+
+                    <div class="mb-2">
+                        <label class="form-label">Nombre</label>
+                        <input [(ngModel)]="productoEditando.producto.ProductoNombre" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Marca</label>
+                        <input [(ngModel)]="productoEditando.producto.Marca" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Modelo</label>
+                        <input [(ngModel)]="productoEditando.producto.Modelo" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Color</label>
+                        <input [(ngModel)]="productoEditando.producto.Color" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Precio venta</label>
+                        <input [(ngModel)]="productoEditando.producto.PrecioVenta" type="number" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Stock actual</label>
+                        <input [(ngModel)]="productoEditando.inventario.StockActual" type="number" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Precio costo</label>
+                        <input [(ngModel)]="productoEditando.producto.PrecioCosto" type="number" class="form-control">
+                    </div>
+
+                    <div class="mb-2">
+                        <label class="form-label">Descripción inventario</label>
+                        <input [(ngModel)]="productoEditando.inventario.Descripcion" class="form-control">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Motivo del cambio</label>
+                        <select [(ngModel)]="productoEditando.MotivoMovimiento" class="form-select">
+                            <option value="" disabled>Seleccione motivo del cambio</option>
+                            <option value="Corrección de stock">Corrección de stock</option>
+                            <option value="Nuevo lote">Nuevo lote</option>
+                            <option value="Devolución">Devolución</option>
+                            <option value="Corrección de precio">Corrección de precio</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="modal-footer justify-content-end">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-success" (click)="guardarEdicion()">
+                    <i class="bi bi-save"></i> Guardar cambios
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- MODAL DE MOVIMIENTOS -->
+<div class="modal fade" id="modalMovimientos" tabindex="-1" aria-labelledby="modalMovimientosLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content border-0 shadow rounded">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="modalMovimientosLabel">Historial de movimientos</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-bordered table-striped">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Tipo</th>
+                            <th>Cantidad</th>
+                            <th>Motivo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let mov of movimientos">
+                            <td>{{ mov.FechaMovimiento | date: 'short' }}</td>
+                            <td>{{ mov.TipoMovimiento }}</td>
+                            <td>{{ mov.Cantidad }}</td>
+                            <td>{{ mov.Motivo }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

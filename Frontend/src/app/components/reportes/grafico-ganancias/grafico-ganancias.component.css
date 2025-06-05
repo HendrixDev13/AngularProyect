@@ -1,0 +1,7 @@
+#graficoGanancias {
+  max-height: 550px;
+  height: 550px;      /* Forzamos altura */
+  width: 100%;
+  margin: auto;
+  display: block;
+}

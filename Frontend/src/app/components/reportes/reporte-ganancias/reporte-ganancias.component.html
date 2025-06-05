@@ -1,0 +1,123 @@
+<div class="container mt-4">
+
+  <!-- 🔝 BOTONES SUPERIORES -->
+  <div class="d-flex justify-content-end gap-3 px-4 pt-2 mb-3">
+    <span
+      class="fw-semibold text-secondary d-flex align-items-center"
+      style="cursor: pointer; min-width: 100px;"
+      (click)="regresarAReportes()"
+    >
+      <i class="bi bi-arrow-left me-2"></i> Reportes
+    </span>
+
+    <span
+      class="fw-semibold text-danger d-flex align-items-center"
+      style="cursor: pointer;"
+      (click)="cerrarSesion()"
+    >
+      <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+    </span>
+  </div>
+
+  <!-- 🧭 TÍTULO -->
+  <h3 class="mb-3">
+    Reporte de Ganancias por Producto
+  </h3>
+
+  <!-- 🔽 BOTÓN COLAPSABLE PARA FILTRO -->
+  <button class="btn btn-outline-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtroGanancias">
+    <i class="bi bi-funnel-fill me-2"></i> Mostrar / Ocultar Filtro
+  </button>
+
+  <!-- 🔧 FILTRO COLAPSABLE -->
+  <div class="collapse mb-3" id="filtroGanancias">
+    <div class="card card-body border-primary">
+      <div class="row g-2 align-items-end">
+        <!-- FILTRO DESDE -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Desde</label>
+          <input type="date" class="form-control" [(ngModel)]="filtro.desde" />
+        </div>
+
+        <!-- FILTRO HASTA -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Hasta</label>
+          <input type="date" class="form-control" [(ngModel)]="filtro.hasta" />
+        </div>
+
+        <!-- FILTRO MES -->
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Mes</label>
+          <select class="form-select" [(ngModel)]="filtro.mes">
+            <option value="">-- Seleccione Mes --</option>
+            <option value="01">Enero</option>
+            <option value="02">Febrero</option>
+            <option value="03">Marzo</option>
+            <option value="04">Abril</option>
+            <option value="05">Mayo</option>
+            <option value="06">Junio</option>
+            <option value="07">Julio</option>
+            <option value="08">Agosto</option>
+            <option value="09">Septiembre</option>
+            <option value="10">Octubre</option>
+            <option value="11">Noviembre</option>
+            <option value="12">Diciembre</option>
+          </select>
+        </div>
+
+        <!-- BOTÓN FILTRAR POR FECHAS -->
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-primary" (click)="filtrarGanancias()">
+            <i class="bi bi-search me-1"></i> Filtrar
+          </button>
+        </div>
+
+        <!-- BOTÓN FILTRAR POR MES -->
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-info" (click)="filtrarGananciasPorMes()">
+            <i class="bi bi-calendar3 me-1"></i> Filtrar por Mes
+          </button>
+        </div>
+
+        <!-- BOTÓN LIMPIAR -->
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-secondary" (click)="limpiarFiltro()">
+            <i class="bi bi-x-circle me-1"></i> Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN EXPORTAR A EXCEL -->
+  <button class="btn btn-outline-success mb-3" (click)="exportarExcel()">
+    <i class="bi bi-file-earmark-excel me-2"></i> Exportar a Excel
+  </button>
+
+  <!-- 📊 TABLA DE GANANCIAS -->
+  <table class="table table-bordered table-striped">
+    <thead class="table-dark">
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad Vendida</th>
+        <th>Ingreso Total</th>
+        <th>Costo Total</th>
+        <th>Ganancia</th>
+        <th>Fecha de Venta</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let item of ganancias">
+        <td>{{ item.Producto }}</td>
+        <td>{{ item.CantidadVendida }}</td>
+        <td>Q {{ item.IngresoTotal | number: '1.2-2' }}</td>
+        <td>Q {{ item.CostoTotal | number: '1.2-2' }}</td>
+        <td>Q {{ item.Ganancia | number: '1.2-2' }}</td>
+        <td>{{ item.FechaGeneracion  }}</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <!-- MENSAJE SI NO HAY REGISTROS -->
+  <p *ngIf="ganancias.length === 0" class="text-muted">No hay registros de ganancias.</p>
+</div>

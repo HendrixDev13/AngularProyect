@@ -1,0 +1,111 @@
+<div class="container mt-4">
+  <!-- BOTONES SUPERIORES -->
+  <div class="d-flex justify-content-end gap-3 px-4 pt-4 mb-3">
+    <span
+      class="fw-semibold text-secondary d-flex align-items-center"
+      style="cursor: pointer; min-width: 100px;"
+      (click)="regresarAReportes()"
+    >
+      <i class="bi bi-arrow-left me-2"></i> Reportes
+    </span>
+
+    <span
+      class="fw-semibold text-danger d-flex align-items-center"
+      style="cursor: pointer;"
+      (click)="cerrarSesion()"
+    >
+      <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+    </span>
+  </div>
+
+  <h3 class="mb-3">
+    <i class="bi bi-clipboard-data me-2"></i>
+    Reporte de Ventas Totales
+  </h3>
+
+  <!-- BOTÓN PARA MOSTRAR/OCULTAR FILTRO -->
+  <button class="btn btn-outline-primary mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#filtroVentas">
+    <i class="bi bi-funnel-fill me-2"></i> Mostrar / Ocultar Filtro
+  </button>
+
+  <!-- BLOQUE COLAPSABLE -->
+  <div class="collapse mb-3" id="filtroVentas">
+    <div class="card card-body border-primary">
+      <div class="row g-2 align-items-end">
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Desde</label>
+          <input type="date" class="form-control" [(ngModel)]="filtro.desde" />
+        </div>
+        <div class="col-md-4">
+          <label class="form-label fw-bold">Hasta</label>
+          <input type="date" class="form-control" [(ngModel)]="filtro.hasta" />
+        </div>
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-primary" (click)="filtrarVentas()">
+            <i class="bi bi-search me-1"></i> Filtrar
+          </button>
+        </div>
+        <div class="col-md-2 d-grid">
+          <button class="btn btn-secondary" (click)="limpiarFiltro()">
+            <i class="bi bi-x-circle me-1"></i> Limpiar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTÓN PARA EXPORTAR -->
+  <button class="btn btn-outline-success mb-3" (click)="exportarExcel()">
+    <i class="bi bi-file-earmark-excel me-2"></i> Exportar a Excel
+  </button>
+
+  <p class="fw-bold mb-3" *ngIf="filtro.desde && filtro.hasta">
+    Mostrando ventas desde {{ filtro.desde }} hasta {{ filtro.hasta }}
+  </p>
+
+  <!-- Mostrar la fecha de la última corrida (solo para la ejecución actual) -->
+  <div *ngIf="fechaGeneracion" class="mb-1">
+    <strong>Generado el (última corrida):</strong>
+    {{ fechaGeneracion | date: 'dd/MM/yyyy' }}
+  </div>
+
+  <!-- Historial resumido: Primera y Última generación del rango -->
+  <div *ngIf="primeraGeneracion || ultimaGeneracion" class="mb-4">
+    <h5>Historial resumido de este rango</h5>
+    <p *ngIf="primeraGeneracion">
+      <strong>Primera generación:</strong>
+      {{ primeraGeneracion | date: 'dd/MM/yyyy' }}
+    </p>
+    <p *ngIf="ultimaGeneracion && ultimaGeneracion !== primeraGeneracion">
+      <strong>Última generación:</strong>
+      {{ ultimaGeneracion | date: 'dd/MM/yyyy'}}
+    </p>
+  </div>
+
+  <table class="table table-striped table-bordered">
+    <thead class="thead-dark">
+      <tr>
+        <th>Año</th>
+        <th>Mes</th>
+        <th>Total Ventas (Q)</th>
+        <th>% del año</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let venta of ventas">
+        <td>{{ venta.Anio }}</td>
+        <td>{{ venta.MesNumero }} - {{ venta.MesNombre }}</td>
+        <td>Q {{ venta.TotalVentas | number: '1.2-2' }}</td>
+        <td>{{ venta.PorcentajeVentas }}%</td>
+      </tr>
+      <tr *ngIf="ventas.length === 0">
+        <td colspan="4" class="text-center">No hay reportes disponibles.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="fw-bold mt-3" *ngIf="ventas.length > 0">
+    TOTAL GENERAL: Q {{ getTotalGeneral() | number: '1.2-2' }}
+  </p>
+  <p *ngIf="ventas.length === 0" class="text-muted">No hay reportes disponibles.</p>
+</div>

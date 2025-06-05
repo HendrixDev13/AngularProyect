@@ -1,0 +1,86 @@
+<div class="container py-4">
+  <!-- Acciones superiores: Inicio y Cerrar sesión -->
+<div class="d-flex justify-content-end gap-3 px-4 pt-4 mb-3">
+  <span
+    class="fw-semibold text-secondary d-flex align-items-center"
+    style="cursor: pointer; min-width: 100px;"
+    (click)="irAlDashboard()"
+  >
+    <ng-container *ngIf="!cargandoDashboard; else cargando">
+      <i class="bi bi-house-door-fill me-2"></i> Inicio
+    </ng-container>
+    <ng-template #cargando>
+      <span class="spinner-border spinner-border-sm text-secondary me-2" role="status"></span>
+      Redirigiendo...
+    </ng-template>
+  </span>
+
+  <span
+    class="fw-semibold text-danger d-flex align-items-center"
+    style="cursor: pointer;"
+    (click)="cerrarSesion()"
+  >
+    <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+  </span>
+</div>
+
+  <h2 class="text-center mb-4">REPORTES</h2>
+
+  <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-4 justify-content-center">
+
+    <div class="col">
+      <div class="card text-center shadow-sm h-100" (click)="verReporte('ventas')">
+        <img src="assets/icons/ventas-totales.png" class="card-img-top mx-auto mt-3" style="width: 64px;" />
+        <div class="card-body">
+          <h6 class="card-title">Reporte ventas totales</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-center shadow-sm h-100" (click)="verReporte('ganancias')">
+        <img src="assets/icons/ganancias.png" class="card-img-top mx-auto mt-3" style="width: 64px;" />
+        <div class="card-body">
+          <h6 class="card-title">Reporte ganancias</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-center shadow-sm h-100" (click)="verReporte('inventario')">
+        <img src="assets/icons/inventario.png" class="card-img-top mx-auto mt-3" style="width: 64px;" />
+        <div class="card-body">
+          <h6 class="card-title">Reporte costo total inventario</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-center shadow-sm h-100" (click)="verReporte('costoventas')">
+        <img src="assets/icons/costo-ventas.png" class="card-img-top mx-auto mt-3" style="width: 64px;" />
+        <div class="card-body">
+          <h6 class="card-title">Reporte costo total ventas</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-center shadow-sm h-100" (click)="verReporte('graficoVentas')">
+        <img src="assets/icons/grafico-ventas.png" class="card-img-top mx-auto mt-3" style="width: 64px;" />
+        <div class="card-body">
+          <h6 class="card-title">Gráfico Ventas por Mes</h6>
+        </div>
+      </div>
+    </div>
+
+    <div class="col">
+      <div class="card text-center shadow-sm h-100" (click)="verReporte('graficoGanancias')">
+        <img src="assets/icons/grafico-ganancias.png" class="card-img-top mx-auto mt-3" style="width: 64px;" />
+        <div class="card-body">
+          <h6 class="card-title">Gráfico Ganancias por Mes</h6>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
