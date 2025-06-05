@@ -3,12 +3,12 @@ import Product from '../models/product';
 import Inventario from '../models/inventario';
 import MovimientoInventario from '../models/movimientoInventario';
 import db from '../database/config';
-
+import { Op } from 'sequelize';  // 👈 agrega esta importación
 
 export const getProducts = async (req: Request, res: Response) => {
   try {
     const productos = await Product.findAll({
-    attributes: ['id_producto', 'ProductoNombre', 'CodigoBarras', 'PrecioVenta', 'PrecioCosto', 'Modelo', 'Marca', 'Color', 'Descripcion'], // ✅ incluye PrecioCosto
+    attributes: ['id_producto', 'ProductoNombre', 'CodigoBarras', 'PrecioVenta', 'PrecioCosto', 'Modelo', 'Marca', 'Color', 'Descripcion', 'Estado'], // ✅ incluye PrecioCosto
     include: [
       {
         model: Inventario,
@@ -26,20 +26,50 @@ export const getProducts = async (req: Request, res: Response) => {
   }
 };
 
+
 export const getProductByCodigoBarras = async (req: Request, res: Response) => {
   const { codigo } = req.params;
-  console.log('➡️ Llegó al endpoint con código:', codigo);
+  console.log('➡️ Llegó al endpoint con código o nombre:', codigo);
 
   try {
+    // Buscar el producto incluyendo su inventario
     const producto = await Product.findOne({
-      where: { CodigoBarras: codigo }
+      where: {
+        [Op.or]: [
+          { CodigoBarras: codigo.trim() },
+          { ProductoNombre: { [Op.like]: `%${codigo.trim()}%` } }
+        ]
+      },
+      include: [
+        {
+          model: Inventario,
+          as: 'inventario',
+          attributes: ['StockActual']
+        }
+      ]
     });
 
     if (!producto) {
       return res.status(404).json({ mensaje: 'Producto no encontrado' });
     }
 
-    return res.json(producto);
+    // Construir respuesta personalizada
+    const respuesta = {
+      id_producto: producto.id_producto,
+      CodigoBarras: producto.CodigoBarras,
+      ProductoNombre: producto.ProductoNombre,
+      Modelo: producto.Modelo,
+      Marca: producto.Marca,
+      Descripcion: producto.Descripcion,
+      Color: producto.Color,
+      PrecioVenta: producto.PrecioVenta,
+      PrecioCosto: producto.PrecioCosto,
+      inventario: producto.inventario
+        ? { StockActual: producto.inventario.StockActual }
+        : { StockActual: 0 }
+    };
+
+    return res.json(respuesta);
   } catch (error) {
     console.error('Error al buscar producto:', error);
     return res.status(500).json({ mensaje: 'Error del servidor' });
@@ -84,7 +114,8 @@ export const registrarProductoConInventario = async (req: Request, res: Response
     Descripcion: producto.Descripcion,
     Color: producto.Color,
     PrecioVenta: producto.PrecioVenta,
-    PrecioCosto: producto.PrecioCosto
+    PrecioCosto: producto.PrecioCosto,
+    Estado: producto.Estado
   });
 
     const id_producto = nuevoProducto.getDataValue('id_producto');
@@ -227,3 +258,24 @@ export const actualizarProductoConMovimiento = async (req: Request, res: Respons
     return res.status(500).json({ msg: 'Error al actualizar el producto' });
   }
 };
+
+export const actualizarEstadoProducto = async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const { estado } = req.body;
+
+    try {
+        const producto = await Product.findByPk(id);
+
+        if (!producto) {
+            return res.status(404).json({ msg: 'Producto no encontrado' });
+        }
+
+        await producto.update({ Estado: estado });
+
+        return res.json({ msg: 'Estado actualizado correctamente' });
+    } catch (error) {
+        console.error('Error al actualizar estado:', error);
+        return res.status(500).json({ msg: 'Error al actualizar estado del producto' });
+    }
+};
+

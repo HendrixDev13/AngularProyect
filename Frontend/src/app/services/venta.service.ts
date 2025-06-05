@@ -15,4 +15,14 @@ export class VentaService {
     return this.http.get<{ numero: number }>(`${this.myAppUrl}/api/ventas/siguiente-recibo`)
       .pipe(map(resp => resp.numero));
   }
+
+  guardarVenta(ventaPayload: any): Observable<any> {
+  const token = localStorage.getItem('token');
+  const headers = {
+    'Authorization': `Bearer ${token}`
+  };
+
+  return this.http.post(`${this.myAppUrl}/api/ventas`, ventaPayload, { headers });
+}
+
 }

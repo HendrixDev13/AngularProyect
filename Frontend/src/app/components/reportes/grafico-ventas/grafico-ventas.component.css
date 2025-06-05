@@ -1,0 +1,6 @@
+#graficoVentas {
+  max-height: 550px;
+  width: 100%; /* para que use todo el ancho disponible */
+  margin: auto;
+  display: block;
+}

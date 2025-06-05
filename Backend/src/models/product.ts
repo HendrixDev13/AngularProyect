@@ -15,6 +15,7 @@ class Producto extends Model<
   declare Color: string;
   declare PrecioVenta: number;
   declare PrecioCosto: number;
+  declare Estado: string;  // 🚀 AGREGAR ESTA LINEA
   declare inventario?: Inventario;
 }
 
@@ -55,6 +56,11 @@ Producto.init({
   PrecioCosto: {
     type: DataTypes.DECIMAL(10, 2),
     allowNull: false
+  },
+  Estado: {  // 🚀 AGREGAR ESTA PARTE EN INIT
+    type: DataTypes.STRING,
+    allowNull: false,
+    defaultValue: 'Activo'
   }
 }, {
   sequelize: db,

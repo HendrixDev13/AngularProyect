@@ -22,30 +22,25 @@
 </button>
 
   <!-- 🔧 FILTRO COLAPSABLE -->
-  <div class="collapse mb-3" id="filtroCostos">
-    <div class="card card-body border-primary">
-      <div class="row g-2 align-items-end">
-        <div class="col-md-4">
-          <label class="form-label fw-bold">Desde</label>
-          <input type="date" class="form-control" [(ngModel)]="filtro.desde" />
-        </div>
-        <div class="col-md-4">
-          <label class="form-label fw-bold">Hasta</label>
-          <input type="date" class="form-control" [(ngModel)]="filtro.hasta" />
-        </div>
-        <div class="col-md-2 d-grid">
-          <button class="btn btn-primary" (click)="filtrarCostos()">
-            <i class="bi bi-search me-1"></i> Filtrar
-          </button>
-        </div>
-        <div class="col-md-2 d-grid">
-          <button class="btn btn-secondary" (click)="limpiarFiltro()">
-            <i class="bi bi-x-circle me-1"></i> Limpiar
-          </button>
-        </div>
+<!-- 🔧 FILTRO COLAPSABLE -->
+<div class="collapse mb-3" id="filtroCostos">
+  <div class="card card-body border-primary">
+    <div class="row g-2 align-items-end">
+      <div class="col-md-6">
+        <label class="form-label fw-bold">Filtrar por Mes y Año:</label>
+        <select class="form-select" [(ngModel)]="mesSeleccionado" (change)="aplicarFiltroMes()">
+          <option value="">-- Mostrar todos --</option>
+          <option *ngFor="let mes of listaMesesDisponibles" [value]="mes">{{ mes | titlecase }}</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-grid">
+        <button class="btn btn-secondary" (click)="limpiarFiltroMes()">
+          <i class="bi bi-x-circle me-1"></i> Limpiar Filtro
+        </button>
       </div>
     </div>
   </div>
+</div>
   <!-- BOTÓN EXPORTAR -->
   <button class="btn btn-outline-success mb-3" (click)="exportarExcel()">
     <i class="bi bi-file-earmark-excel me-2"></i> Exportar a Excel

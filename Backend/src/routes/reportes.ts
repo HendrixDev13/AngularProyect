@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import db from '../database/config';
-import { obtenerReporteVentasMensual } from '../controllers/reportes';
+import { obtenerReporteVentasMensual, obtenerPrimerUltimoLogPorRango } from '../controllers/reportes';
 
 
 const router = Router();
@@ -8,11 +8,29 @@ const router = Router();
 router.get('/ventas', obtenerReporteVentasMensual);
 
 
-    router.get('/ganancias/detalle', async (_req, res) => {
+// NUEVO endpoint para primera y última generación del rango dado:
+router.get('/ventas/logs/rango', obtenerPrimerUltimoLogPorRango);
+
+// La ruta queda explícita como “/ventas/mensual”
+router.get('/ganancias/detalle', async (req, res) => {
+  const { desde, hasta, mes } = req.query as { desde?: string; hasta?: string; mes?: string };
+
+  let whereClause = '';
+  let replacements: any = {};
+
+  if (desde && hasta) {
+    whereClause = `WHERE CAST(V.fecha AS DATE) BETWEEN :desde AND :hasta`;
+    replacements = { desde, hasta };
+  } else if (mes) {
+    whereClause = `WHERE MONTH(V.fecha) = :mesSeleccionado`;
+    replacements = { mesSeleccionado: parseInt(mes, 10) };
+  }
+
   try {
     const [result] = await db.query(`
       SELECT 
         P.ProductoNombre AS Producto,
+        CONVERT(VARCHAR(10), V.fecha, 23) AS FechaGeneracion,   -- ← Devuelve "2025-05-20"
         SUM(DV.cantidad) AS CantidadVendida,
         SUM(DV.precio_unitario * DV.cantidad) AS IngresoTotal,
         SUM(P.PrecioCosto * DV.cantidad) AS CostoTotal,
@@ -21,17 +39,24 @@ router.get('/ventas', obtenerReporteVentasMensual);
         tbl_DetalleVenta DV
       JOIN 
         tbl_Producto P ON DV.id_producto = P.id_producto
+      JOIN 
+        tbl_Venta V ON V.id_venta = DV.id_venta
+      ${whereClause}
       GROUP BY 
-        P.ProductoNombre
+        P.ProductoNombre, CONVERT(VARCHAR(10), V.fecha, 23)
       ORDER BY 
-        Ganancia DESC
-    `);
+        FechaGeneracion ASC, Ganancia DESC;
+    `, { replacements });
+
     res.json(result);
   } catch (error) {
     console.error('Error al obtener detalle de ganancias:', error);
     res.status(500).json({ mensaje: 'Error interno al obtener ganancias' });
   }
 });
+
+
+
 
 
 
@@ -66,7 +91,7 @@ router.get('/ventas', obtenerReporteVentasMensual);
   try {
     const [result] = await db.query(`
       SELECT 
-        FORMAT(V.fecha, 'MMMM yyyy') AS Mes,
+        FORMAT(V.fecha, 'MMMM yyyy', 'es-ES') AS Mes,
         SUM(DV.precio_unitario * DV.cantidad) AS TotalVentas,
         SUM(P.PrecioCosto * DV.cantidad) AS CostoTotal,
         SUM((DV.precio_unitario - P.PrecioCosto) * DV.cantidad) AS Ganancia
@@ -77,7 +102,7 @@ router.get('/ventas', obtenerReporteVentasMensual);
       JOIN 
         tbl_Venta V ON DV.id_venta = V.id_venta
       GROUP BY 
-        FORMAT(V.fecha, 'MMMM yyyy')
+        FORMAT(V.fecha, 'MMMM yyyy', 'es-ES')
       ORDER BY 
         MIN(V.fecha) DESC
     `);
@@ -92,14 +117,14 @@ router.get('/grafico-ventas', async (_req, res) => {
   try {
     const [result] = await db.query(`
       SELECT 
-        FORMAT(V.fecha, 'MMMM yyyy') AS Mes,
+        FORMAT(V.fecha, 'MMMM yyyy', 'es-ES') AS Mes,
         SUM(DV.precio_unitario * DV.cantidad) AS TotalVentas
       FROM 
         tbl_DetalleVenta DV
       JOIN 
         tbl_Venta V ON DV.id_venta = V.id_venta
       GROUP BY 
-        FORMAT(V.fecha, 'MMMM yyyy')
+        FORMAT(V.fecha, 'MMMM yyyy', 'es-ES')
       ORDER BY 
         MIN(V.fecha)
     `);
@@ -112,9 +137,30 @@ router.get('/grafico-ventas', async (_req, res) => {
 
 
 router.get('/grafico-ganancias', async (_req, res) => {
-  console.log('📊 Se alcanzó el endpoint /grafico-ganancias');
-  res.json([{ Mes: 'Enero', Ganancia: 1000 }]); // respuesta temporal
+  try {
+    const [result] = await db.query(`
+      SELECT 
+        FORMAT(V.fecha, 'MMMM yyyy', 'es-ES') AS Mes,
+        SUM((DV.precio_unitario - P.PrecioCosto) * DV.cantidad) AS Ganancia
+      FROM 
+        tbl_DetalleVenta DV
+      JOIN 
+        tbl_Producto P ON DV.id_producto = P.id_producto
+      JOIN 
+        tbl_Venta V ON DV.id_venta = V.id_venta
+      GROUP BY 
+        FORMAT(V.fecha, 'MMMM yyyy', 'es-ES')
+      ORDER BY 
+        MIN(V.fecha)
+    `);
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error al obtener gráfico de ganancias:', error);
+    res.status(500).json({ mensaje: 'Error interno al obtener gráfico de ganancias' });
+  }
 });
+
 
 
 
