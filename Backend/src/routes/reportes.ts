@@ -7,6 +7,8 @@ const router = Router();
 
 router.get('/ventas', obtenerReporteVentasMensual);
 
+router.get('/ventas/mensual', obtenerReporteVentasMensual);
+
 
 // NUEVO endpoint para primera y última generación del rango dado:
 router.get('/ventas/logs/rango', obtenerPrimerUltimoLogPorRango);
