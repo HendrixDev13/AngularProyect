@@ -38,13 +38,15 @@
 
     <div class="col-md-4">
       <label class="form-label fw-bold">Producto:</label>
-       <input type="text"
-       class="form-control mb-1"
-       #filtroInput
-       placeholder="Buscar por nombre o código"
-       (input)="filtrarProductos(filtroInput.value)">
 
-          <select
+      <input type="text"
+            class="form-control mb-1"
+            #filtroInput
+            placeholder="Buscar por nombre o código"
+            (input)="filtrarProductos(filtroInput.value)"
+            (keydown.enter)="onBarcodeScanned(filtroInput.value)"> <!-- 🚀 este es el cambio -->
+
+      <select
         class="form-select"
         [(ngModel)]="productoSeleccionado">
         <option [ngValue]="undefined" disabled>-- Selecciona un producto --</option>
@@ -52,8 +54,8 @@
           {{ p.ProductoNombre }} ({{ p.CodigoBarras }})
         </option>
       </select>
-
     </div>
+
 
     <div class="col-md-2">
       <label class="form-label fw-bold">Cantidad:</label>
@@ -100,13 +102,22 @@
         <td>{{ item.cantidad }}</td>
         <td>Q {{ item.subtotal | number:'1.2-2' }}</td>
         <td>
-          <button class="btn btn-sm btn-danger" (click)="eliminarDelCarrito(item.id)">
-            ❌
-          </button>
+          <button (click)="disminuirCantidad(item.id)"
+                  class="btn btn-sm btn-warning me-1"
+                  title="Disminuir cantidad">➖</button>
+
+          <button (click)="eliminarDelCarrito(item.id)"
+                  class="btn btn-sm btn-danger"
+                  title="Eliminar producto">❌</button>
         </td>
       </tr>
     </tbody>
   </table>
+
+    <!-- 🚀 TOTAL a pagar -->
+  <div class="text-end me-3 mb-3">
+    <h4>Total a pagar: <strong>Q {{ total | number:'1.2-2' }}</strong></h4>
+  </div>
 
   <!-- Botón Pagar -->
   <div class="text-end">

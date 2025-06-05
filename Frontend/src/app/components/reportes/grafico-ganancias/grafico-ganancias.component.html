@@ -1,1 +1,21 @@
-<p>grafico-ganancias works!</p>
+<div class="container mt-4">
+
+  <!-- BOTONES SUPERIORES -->
+  <div class="d-flex justify-content-end gap-3 px-4 pt-2 mb-3">
+    <span class="fw-semibold text-secondary d-flex align-items-center" style="cursor: pointer;" (click)="regresarAReportes()">
+      <i class="bi bi-arrow-left me-2"></i> Reportes
+    </span>
+    <span class="fw-semibold text-danger d-flex align-items-center" style="cursor: pointer;" (click)="cerrarSesion()">
+      <i class="bi bi-box-arrow-right me-2"></i> Cerrar sesión
+    </span>
+  </div>
+
+  <!-- TÍTULO -->
+  <h3 class="mb-4">
+    📈 Gráfico de Ganancias por Mes
+  </h3>
+
+  <!-- CANVAS DEL GRÁFICO -->
+  <canvas id="graficoGanancias"></canvas>
+
+</div>

@@ -3,6 +3,10 @@ import { CommonModule } from '@angular/common';
 import { ProductService } from '../../services/product.service';
 import { FormsModule } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import localeEsGt from '@angular/common/locales/es-GT';
+
+
 
 @Component({
   selector: 'app-list-products',
@@ -24,6 +28,10 @@ export class ListProductsComponent implements OnInit {
   pin: string = '';
   productoSeleccionadoId: number | null = null;
   movimientos: any[] = [];
+  filtroBusqueda: string = '';
+  productosFiltradosList: any[] = [];
+
+
 
     nuevoProducto = {
     producto: {
@@ -34,7 +42,8 @@ export class ListProductsComponent implements OnInit {
     Descripcion: '',
     Color: '',
     PrecioVenta: 0,
-    PrecioCosto: 0  // ✅ Añadir esta línea
+    PrecioCosto: 0,  // ✅ Añadir esta línea
+    Estado: 'Activo'  // ✅ Añadir estado por defecto
   },
 
 
@@ -57,6 +66,7 @@ export class ListProductsComponent implements OnInit {
       Color: string;
       PrecioVenta: number;
     PrecioCosto: number;
+      Estado?: string;  // ✅ Añadir estado opcional
     };
     inventario: {
       StockActual: number;
@@ -69,7 +79,8 @@ export class ListProductsComponent implements OnInit {
 
   constructor(
     private productService: ProductService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -77,6 +88,7 @@ export class ListProductsComponent implements OnInit {
     setInterval(() => this.actualizarHora(), 1000);
     this.cargarProductos();
   }
+
 
   ngAfterViewInit(): void {
     setTimeout(() => this.codigoInput.nativeElement.focus(), 500);
@@ -89,27 +101,39 @@ export class ListProductsComponent implements OnInit {
 
   cargarProductos(): void {
     this.productService.getProducts().subscribe({
-      next: (data) => {
-        this.productos = data
-        .filter(p => p.ProductoNombre && p.PrecioVenta !== null)
-        .map(p => {
-          const stock = p.inventario?.StockActual ?? 0;
-          const descripcion = p.inventario?.Descripcion ?? p.Descripcion ?? 'Sin descripción';
+        next: (data) => {
+            this.productos = data
+                .filter(p => p.ProductoNombre && p.PrecioVenta !== null)
+                .map(p => {
+                    const stock = p.inventario?.StockActual ?? 0;
+                    const descripcion = p.inventario?.Descripcion ?? p.Descripcion ?? 'Sin descripción';
 
-          return {
-            ...p,
-            StockActual: stock,
-            Descripcion: descripcion
-            // 👈 ya no machacamos PrecioCosto
-          };
-        });
+                    return {
+                        ...p,
+                        StockActual: stock,
+                        Descripcion: descripcion
+                    };
+                });
 
-
-        this.calcularTotal();
-      },
-      error: () => this.toastr.error('Error al cargar productos')
+            // después de cargar productos, inicializamos lista filtrada
+            this.productosFiltradosList = [...this.productos];
+            this.calcularTotal();
+        },
+        error: () => this.toastr.error('Error al cargar productos')
     });
-  }
+}
+
+
+  aplicarFiltro(): void {
+    const filtro = this.filtroBusqueda.toLowerCase().trim();
+
+    this.productosFiltradosList = this.productos.filter(p =>
+        p.ProductoNombre.toLowerCase().includes(filtro) ||
+        p.CodigoBarras?.toLowerCase().includes(filtro) ||
+        p.id_producto.toString().includes(filtro)
+    );
+}
+
 
 
 
@@ -232,7 +256,8 @@ export class ListProductsComponent implements OnInit {
         Descripcion: '',
         Color: '',
         PrecioVenta: 0,
-        PrecioCosto: 0
+        PrecioCosto: 0,
+        Estado: 'Activo'  // ✅ Añadir estado por defecto
       },
       inventario: {
         StockActual: 0,
@@ -306,6 +331,34 @@ export class ListProductsComponent implements OnInit {
     });
   }
 
+regresarInicio() {
+    // Redirige a la página principal (ajusta la ruta según tu app)
+    this.router.navigate(['/dashboard']);
+}
+
+cerrarSesion() {
+    // Aquí puedes limpiar el token, cerrar sesión, redirigir al login, etc.
+    localStorage.clear();
+    this.router.navigate(['/login']);
+}
+
+toggleEstado(producto: any): void {
+    const nuevoEstado = producto.Estado === 'Activo' ? 'Inactivo' : 'Activo';
+
+    this.productService.actualizarEstadoProducto(producto.id_producto, nuevoEstado).subscribe({
+        next: () => {
+            this.toastr.success(`Producto ${nuevoEstado}`);
+            producto.Estado = nuevoEstado;
+        },
+        error: () => {
+            this.toastr.error('Error al cambiar el estado del producto');
+        }
+    });
+}
+
+get totalInventarioFormateado(): string {
+    return new Intl.NumberFormat('es-GT', { style: 'currency', currency: 'GTQ' }).format(this.totalInventario);
+}
 
 
 }

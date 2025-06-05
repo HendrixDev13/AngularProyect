@@ -77,6 +77,11 @@ export class ProductService {
     );
   }
 
+actualizarEstadoProducto(id_producto: number, nuevoEstado: string): Observable<any> {
+    return this.http.patch(`${this.myAppUrl}${this.myApiUrl}/estado/${id_producto}`, { estado: nuevoEstado });
+}
+
+
 
 
 }
